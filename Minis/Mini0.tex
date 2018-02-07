@@ -1,0 +1,63 @@
+\documentclass[12pt]{article}
+\usepackage{tikz}
+
+\def\pstreehooki{\psset{thislevelsep=*0pt}}
+\def\pstreehookiii{\psset{thislevelsep=*0pt}}
+\def\pstreehookv{\psset{thislevelsep=*0pt}}
+\def\pstreehookvii{\psset{thislevelsep=*0pt}}
+\def\pstreehookix{\psset{thislevelsep=*0pt}}
+\def\pstreehookxi{\psset{thislevelsep=*0pt}}
+
+\begin{document} 
+\title{Mini Assignment 0}
+\author{Due: 9:30am on February $1^{st}$, 2018}
+\author{Sean Mitchell}
+\date{20 points}
+\maketitle
+
+Submit your \LaTeX\ solution to the dropbox on d2l. Given the following grammar:\\
+
+$<$VarDecl$>$ $\rightarrow$ int $<$VarList$>$ ;
+
+$<$VarList$>$ $\rightarrow$ $<$Identifier$>$ $\mid$ $<$Identifier$>$ , $<$VarList$>$
+
+$<$Identifier$>$ $\rightarrow$ $<$Letter$>$ $\mid$ $<$Identifier$>$ $<$Letter$>$ $\mid$ $<$Identifier$>$ $<$Digit$>$
+
+$<$Integer$>$ $\rightarrow$ $<$Digit$>$ $\mid$ $<$Digit$>$ $<$Integer$>$ 
+
+$<$Letter$>$ $\rightarrow$ a $\mid$ b $\mid$ c $\mid$ d
+
+$<$Digit$>$ $\rightarrow$ 1 $\mid$ 2 $\mid$ 3 $\mid$ 4\\
+
+Provide a \textbf{parse tree} showing that:
+
+\vspace{1em}
+
+\textbf{int a, b, c;}
+
+\vspace{1em}
+
+is a valid $<$VarDecl$>$.\\\\\\
+\begin{tikzpicture}[sibling distance=10em]]
+  \node {$<$VarDecl$>$}
+    child { node {int} }
+    child { node {$<$VarList$>$} 
+        child { node {$<$Identifier$>$} 
+          	child { node {$<$Letter$>$} 
+          	child { node {a} }}}
+        child { node {,} }
+        child { node {$<$VarList$>$} 
+          child { node {$<$Identifier$>$} 
+          	child { node {$<$Letter$>$} 
+          	child { node {b} }}}
+          child { node {,} }
+          child { node {$<$VarList$>$} 
+          child { node {$<$Identifier$>$ }
+          	child { node {$<$Letter$>$} 
+          	child { node {c} }} } } } }
+    child { node {;} };
+\end{tikzpicture}
+ 
+
+
+\end{document}
