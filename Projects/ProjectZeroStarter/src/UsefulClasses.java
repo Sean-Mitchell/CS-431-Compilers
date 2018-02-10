@@ -6,6 +6,24 @@ package Starter;
 	to show you what to do for the remaining classes.
 */
 
+abstract class Stmts {}
+
+class ContinuingStmts extends Stmts{
+	public Stmt stm;
+	public Stmts stms;
+	public ContinuingStmts(Stmt stm, Stmts stms){
+		this.stm = stm;
+		this.stms = stms;
+	}
+}
+
+class LastStmts extends Stmts{
+	public Stmt stm;
+	public ContinuingStmts(Stmt stm){
+		this.stm = stm;
+	}
+}
+
 abstract class Stmt {}
 
 //handles the Stmt --> echo ( ExpList ) production
@@ -36,7 +54,47 @@ class NumExp extends Expression
     }
 }
 
+class IdExp extends Expression
+{
+    public String id;
+    public IdExp(String id){
+        this.id = id;
+    }
+}
+
+class BinExp extends Expression
+{
+    public Expression exp1;
+    public BinOp op;
+    public Expression exp2;
+    public BinExp(Expression exp1, BinOp op, Expression exp2){
+        this.exp1 = exp1;
+        this.op = op;
+        this.exp2 = exp2;
+    }
+}
+
+class UnaryExp extends Expression
+{
+    public Expression exp;
+    public UnaryOp op;
+    public NumExp(Expression exp, UnaryOp op){
+        this.exp = exp;
+        this.op = op;
+    }
+}
+
 abstract class ExpList {}
+
+class ContinuingExpList extends ExpList
+{
+	public Expression exp;
+	public ExpList list;
+	public ContinuingExpList(Expression exp, ExpList list){
+		this.exp = exp;
+		this.list = list;
+	}
+}
 
 class LastExpList extends ExpList
 {
@@ -44,4 +102,23 @@ class LastExpList extends ExpList
     public LastExpList(Expression h){
         head = h;
     }
+}
+
+abstract class Operator
+{
+	public int opType;
+}
+
+public class BinOp extends Operator
+{
+	public BinOp(int opType){
+		this.opType = opType;
+	}
+}
+
+public class UnaryOp extends Operator
+{
+	public UnaryOp(int opType){
+		this.opType = opType;
+	}
 }
