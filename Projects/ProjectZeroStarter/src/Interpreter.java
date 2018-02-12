@@ -58,8 +58,7 @@ public class Interpreter{
  	}
  	
  	public int interpret(IdExp exp) {
-    	return exp.id;
-    	//TODO
+    	return exp.getValue;
  	}
  	
  	public int interpret(BinExp exp) {

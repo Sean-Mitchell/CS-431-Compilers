@@ -6,6 +6,8 @@ package Starter;
 	to show you what to do for the remaining classes.
 */
 
+static HashMap<String, Expression> idMap = new HashMap<>();
+
 abstract class Stmts {}
 
 class ContinuingStmts extends Stmts{
@@ -41,6 +43,8 @@ class AssignStmt extends Stmt{
     public AssignStmt(String i, Expression e){
         id = i;
         exp = e;
+		
+		idMap.put(id, exp);
     }
 }
 
@@ -57,6 +61,11 @@ class NumExp extends Expression
 class IdExp extends Expression
 {
     public String id;
+	
+	public Expression getValue() {
+		return idMap.get(id);
+	}
+	
     public IdExp(String id){
         this.id = id;
     }
