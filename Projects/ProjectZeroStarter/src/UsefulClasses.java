@@ -87,7 +87,7 @@ class UnaryExp extends Expression
 {
     public Expression exp;
     public UnaryOp op;
-    public NumExp(Expression exp, UnaryOp op){
+    public NumExp( UnaryOp op, Expression exp){
         this.exp = exp;
         this.op = op;
     }
