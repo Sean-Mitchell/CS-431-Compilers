@@ -1,0 +1,42 @@
+\documentclass[12pt]{article}
+
+\begin{document} 
+\title{Mini Assignment 1}
+\author{By: Sean Mitchell}
+\date{20 points}
+\maketitle
+
+Create a regular expression for each of the following problems. The alphabet for each problem is $A = \{a, b, c\}$.
+
+\begin{enumerate}
+	\item Create a regular expression for a language $l$ such that all strings in $l$ contain an even number of $b$'s or it 		contains an odd number of $a$'s. This is not an exclusive or (i.e. bba, bab, bbaabab, bbaa, abbb are all valid).
+    
+    \begin{enumerate}
+        \item $\left(c^{*}b^{*}\right)^{*}a\left(\left(c^{*}b^{*}\right)^{*}a\left(c^{*}b^{*}\right)^{*}a\right)^{*}\left(c^{*}b^{*}\right)^{*}$
+        $\vert$
+        $\left(\left(a^{*}c^{*}\right)^{*}b\left(a^{*}c^{*}\right)^{*}b\right)^{*}\left(a^{*}c^{*}\right)^{*}$
+        $\vert$
+        $c^{*}$
+    \end{enumerate}
+    
+    \item Create a regular expression for a language $l$ such that all strings in $l$ do \textbf{not} contain the substring $cc$.
+    \begin{enumerate}
+        \item $\left(\left(a \vert b\right)\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}\right)^{*}$
+        $\vert$
+        $\left(\left(a^{*}b^{*}\right)^{*}c\left(a \vert b\right)\left(a^{*}b^{*}\right)^{*}\right)^{*}$
+        $\vert$
+        $c$
+        $\vert$
+        $\left(a^{*}b^{*}\right)^{*}$
+    \end{enumerate}
+    \item Create a regular expression for a language $l$ such that for all strings in $l$, the number of $c$'s is divisible by 2 or divisible by 3 (i.e. ccbaba, cbbacbbc, bcbcbcbc are in the language but ccccc is not).
+    \begin{enumerate}
+        \item $\left(\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}\right)^{*}$
+        $\vert$
+        $\left(\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}c\left(a^{*}b^{*}\right)^{*}\right)^{*}$
+        $\vert$
+        $\left(a^{*}b^{*}\right)^{*}$
+    \end{enumerate}
+\end{enumerate}
+
+\end{document}
