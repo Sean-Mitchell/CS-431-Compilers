@@ -4,9 +4,19 @@ public class Program{
 	//the syntax tree representation of:  echo(34)
 	//You should create separate programs for each tree you create.
   	private static Stmts program = new ContinuingStmts(
-		new AssignStmt("two", new NumExp(30)), 
+		new AssignStmt("two",
+				new BinExp(new new NumExp(20), 
+						new BinOp("-"), 
+						new BinExp(new NumExp(10),
+								new BinOp("*"), 
+								new NumExp(5)))), 
 		new ContinuingStmts(
-			new AssignStmt("three", new NumExp(30)),
+			new AssignStmt("three", 
+					new BinExp(new IdExp("two"), 
+							new BinOp("%"), 
+							new BinExp(new NumExp(4),
+									new BinOp("+"), 
+									new NumExp(6)))),
 			new LastStmts(
 					new PrintStmt(
 							new ContinuingExpList(new IdExp("two"), 
