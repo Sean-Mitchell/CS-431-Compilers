@@ -4,7 +4,7 @@ public class Program1{
 	//the syntax tree representation of:  echo(34)
 	//You should create separate programs for each tree you create.
   	private static Stmts program = new ContinuingStmts(
-		new AssignStmt(new IdExp("one"), new NumExp(30)),
+		new AssignStmt("one", new NumExp(30)),
 		new LastStmts(
 			new PrintStmt(new LastExpList(new IdExp("one")))
 		)

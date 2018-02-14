@@ -13,10 +13,9 @@ public class Interpreter{
 	public int interpret(Stmts stms) {
 		if (stms instanceof ContinuingStmts) {
 			interpret(((ContinuingStmts)stms).stms);
-			interpret(((ContinuingStmts)stms).stm);
-		} else {
-			interpret(((LastStmts)stms).stm);
 		}
+		
+		interpret(((LastStmts)stms).stm);
 		
 		return 0;
 	}

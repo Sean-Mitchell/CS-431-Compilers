@@ -1,4 +1,4 @@
-/*package Starter;
+package Starter;
 
 public class Program3{
 	//the syntax tree representation of:  echo(34)
@@ -59,4 +59,3 @@ public class Program3{
 	    interpreter.interpret(program);
 	}
 }
-*/
