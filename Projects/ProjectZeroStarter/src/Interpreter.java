@@ -69,6 +69,7 @@ public class Interpreter{
  	}
  	
  	public int interpret(IdExp exp) {
+ 		
 		if (exp.getValue() instanceof NumExp) {
 			return interpret((NumExp)exp.getValue());			
 		} else if (exp.getValue() instanceof IdExp) {
@@ -100,16 +101,16 @@ public class Interpreter{
     	}
  	}
 
- 	public int interpret(ExpList list) {
+ 	public String interpret(ExpList list) {
 		if (list instanceof ContinuingExpList) {
-			return interpret(((ContinuingExpList)list).list) + ", " + interpret((LastExpList)list);
+			return interpret((ContinuingExpList)list);
 		} else {
-			return interpret((LastExpList)list);
+			return interpret((LastExpList)list) + "";
 		}   		
  	}
 
-	public int interpret(ContinuingExpList list) {
-			return interpret((Expression)list.exp) + interpret((ExpList)list.list);	
+	public String interpret(ContinuingExpList list) {
+		return interpret((Expression)list.exp) + "\n" + interpret((ExpList)list.list);
 	}
 
  	public int interpret(LastExpList list) {

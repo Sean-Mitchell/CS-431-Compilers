@@ -11,7 +11,7 @@
     <target name="run">
         <java classname="Starter.Program1" classpath="build/classes"/>
 		<java classname="Starter.Program2" classpath="build/classes"/>
-		
+		<java classname="Starter.Program3" classpath="build/classes"/>		
     </target>
     
     <target name="all">

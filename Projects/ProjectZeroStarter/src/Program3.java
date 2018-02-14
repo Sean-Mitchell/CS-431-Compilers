@@ -4,31 +4,9 @@ public class Program3{
 	//the syntax tree representation of:  echo(34)
 	//You should create separate programs for each tree you create.
   	private static Stmts program = new ContinuingStmts(
-		new AssignStmt(new IdExp("four"),
-			new BinExp(	new NumExp(5), 
-					new BinOp(0), 
-					new NumExp(10))), 
-		new ContinuingStmts(
-				new AssignStmt(new IdExp("five"),
-							new BinExp(
-									new NumExp(10), 
-							new BinOp(3), 
-							new NumExp(3))), 
-		new ContinuingStmts(
-				new PrintStmt(
-						new ContinuingExpList(new IdExp("four"), 
-						new LastExpList(new IdExp("five")))
-				)				
-		,
-		new ContinuingStmts(
-				new AssignStmt(new IdExp("four"),
-						new UnaryExp(new UnaryOp(1),new IdExp("four"))) 				
-		,
-		new ContinuingStmts(
-				new PrintStmt(
-						new LastExpList(
-								new IdExp("four")))				
-		,
+		new PrintStmt(
+				new ContinuingExpList(new IdExp("four"), 
+				new LastExpList(new IdExp("five")))), 
 		new ContinuingStmts(
 				new AssignStmt(new IdExp("five"),
 						new UnaryExp(new UnaryOp(1),
@@ -36,13 +14,33 @@ public class Program3{
 											new UnaryOp(0),										
 											new IdExp("four")),								
 										new BinOp(3), 
-										new IdExp("four"))))			
+										new IdExp("four")))), 
+		new ContinuingStmts(
+				new PrintStmt(
+						new LastExpList(
+								new IdExp("four")))			
 		,
-		new LastStmts(
+		new ContinuingStmts(
+				new AssignStmt(new IdExp("four"),
+						new UnaryExp(new UnaryOp(1),new IdExp("four"))) 				
+		,
+		new ContinuingStmts(	
 				new PrintStmt(
 						new ContinuingExpList(new IdExp("four"), 
-						new LastExpList(new IdExp("five")))
-				))))))));
+						new LastExpList(new IdExp("five"))))							
+		,
+		new ContinuingStmts(new AssignStmt(new IdExp("five"),
+				new BinExp(
+						new NumExp(10), 
+				new BinOp(3), 
+				new NumExp(3)))			
+		,
+		new LastStmts(
+				new AssignStmt(new IdExp("four"),
+						new BinExp(	new NumExp(5), 
+								new BinOp(0), 
+								new NumExp(10)))
+				)))))));
 
 	public static void main(String[] args) {
 		//Create a new Interpreter Object
