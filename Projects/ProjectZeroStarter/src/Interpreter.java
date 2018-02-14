@@ -93,7 +93,14 @@ public class Interpreter{
  	}
 
  	public int interpret(ExpList list) {
-    	return this.interpret((LastExpList)list);
+		if (list instanceof ContinuingExpList) {
+			interpret((ContinuingExpList)list);
+			interpret((ContinuingExpList)list);
+		} else {
+			interpret((LastExpList)list);
+		}
+		
+		return 0;    		
  	}
 
 	public int interpret(ContinuingExpList list) {
@@ -101,6 +108,16 @@ public class Interpreter{
 	}
 
  	public int interpret(LastExpList list) {
-    	return this.interpret(list.head);
+		if (list.head instanceof NumExp) {
+			interpret((NumExp)list.head);			
+		} else if (list.head instanceof IdExp) {
+			interpret((IdExp)list.head);			
+		} else if (list.head instanceof IdExp) {
+			interpret((BinExp)list.head);	
+		} else {
+			interpret((UnaryExp)list.head);
+		}
+ 		
+    	return 0;
   	}
 }
