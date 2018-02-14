@@ -1,20 +1,17 @@
-/*package Starter;
+package Starter;
 
 public class Program3{
 	//the syntax tree representation of:  echo(34)
 	//You should create separate programs for each tree you create.
   	private static Stmts program = new ContinuingStmts(
 		new AssignStmt(new IdExp("four"),
-			new BinExp(new UnaryExp
-						(new UnaryOp("--"),
-						new NumExp(5)), 
+			new BinExp(	new NumExp(5), 
 					new BinOp(0), 
-					new NumExp(10)), 
+					new NumExp(10))), 
 		new ContinuingStmts(
 				new AssignStmt(new IdExp("five"),
-					new BinExp(new UnaryExp
-							(new UnaryOp("--"),
-									new NumExp(10)), 
+							new BinExp(
+									new NumExp(10), 
 							new BinOp(3), 
 							new NumExp(3))), 
 		new ContinuingStmts(
@@ -25,8 +22,7 @@ public class Program3{
 		,
 		new ContinuingStmts(
 				new AssignStmt(new IdExp("four"),
-						new UnaryExp(new UnaryOp(">>"), 
-								new UnaryExp(new UnaryOp("--"), new IdExp("four")))) 				
+						new UnaryExp(new UnaryOp(1),new IdExp("four"))) 				
 		,
 		new ContinuingStmts(
 				new PrintStmt(
@@ -35,20 +31,18 @@ public class Program3{
 		,
 		new ContinuingStmts(
 				new AssignStmt(new IdExp("five"),
-						new BinExp(new UnaryExp(
-								new UnaryOp("<<"),
-										new UnaryExp(new UnaryOp("--",
-												new IdExp("four")))),
-								
-								new BinOp(3), 
-								new UnaryExp(UnaryOp(">>"), new IdExp("four"))))				
+						new UnaryExp(new UnaryOp(1),
+								new BinExp(new UnaryExp(
+											new UnaryOp(0),										
+											new IdExp("four")),								
+										new BinOp(3), 
+										new IdExp("four"))))			
 		,
 		new LastStmts(
 				new PrintStmt(
 						new ContinuingExpList(new IdExp("four"), 
 						new LastExpList(new IdExp("five")))
-				)))))))
-	));
+				))))))));
 
 	public static void main(String[] args) {
 		//Create a new Interpreter Object
@@ -59,4 +53,3 @@ public class Program3{
 	    interpreter.interpret(program);
 	}
 }
-*/
