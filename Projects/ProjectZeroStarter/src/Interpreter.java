@@ -102,9 +102,9 @@ public class Interpreter{
 
  	public int interpret(ExpList list) {
 		if (list instanceof ContinuingExpList) {
-			return interpret((ContinuingExpList)list);
+			return interpret(((ContinuingExpList)list).list) + ", " + interpret(((LastExpList)list).exp);
 		} else {
-			return interpret((LastExpList)list);
+			return interpret(((LastExpList)list).exp);
 		}   		
  	}
 
