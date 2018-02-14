@@ -69,7 +69,15 @@ public class Interpreter{
  	}
  	
  	public int interpret(IdExp exp) {
-    	return interpret(exp.getValue());
+		if (exp.getValue() instanceof NumExp) {
+			return interpret((NumExp)exp.getValue());			
+		} else if (exp.getValue() instanceof IdExp) {
+			return interpret((IdExp)exp.getValue());		
+		} else if (exp.getValue() instanceof BinExp) {
+			return interpret((BinExp)exp.getValue());	
+		} else {
+			return interpret((UnaryExp)exp.getValue());
+		}
  	}
  	
  	public int interpret(BinExp exp) {
@@ -94,30 +102,25 @@ public class Interpreter{
 
  	public int interpret(ExpList list) {
 		if (list instanceof ContinuingExpList) {
-			interpret((ContinuingExpList)list);
-			interpret((ContinuingExpList)list);
+			return interpret((ContinuingExpList)list);
 		} else {
-			interpret((LastExpList)list);
-		}
-		
-		return 0;    		
+			return interpret((LastExpList)list);
+		}   		
  	}
 
 	public int interpret(ContinuingExpList list) {
-		return 0;
+			return interpret((Expression)list.exp) + interpret((ExpList)list.list);	
 	}
 
  	public int interpret(LastExpList list) {
 		if (list.head instanceof NumExp) {
-			interpret((NumExp)list.head);			
+			return interpret((NumExp)list.head);			
 		} else if (list.head instanceof IdExp) {
-			interpret((IdExp)list.head);			
-		} else if (list.head instanceof IdExp) {
-			interpret((BinExp)list.head);	
+			return interpret((IdExp)list.head);		
+		} else if (list.head instanceof BinExp) {
+			return interpret((BinExp)list.head);	
 		} else {
-			interpret((UnaryExp)list.head);
+			return interpret((UnaryExp)list.head);
 		}
- 		
-    	return 0;
   	}
 }
