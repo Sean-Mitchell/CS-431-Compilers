@@ -27,14 +27,25 @@ public class Scanner {
 		String partialToken = "";
 		
 		partialToken = partialToken + fr.next();
-		Token[] possibleTokens = getPossibleTokens(partialToken);
 		
-		while (possibleTokens.size() > 0) {
-			for (int i = 0; i < possibleTokens.size(); i++) {
-				if (possibleTokens.get(i).value.equals(partialToken)) {
-					//needs a lot more than just this like adding variables and shit, this is just to get the ball rollin
-					return new Token(possibleTokens.get(i).value, possibleTokens.get(i).type);
+		if (partialToken.trim().length() > 0) {// Whitespace check
+		
+			Token[] possibleTokens = getPossibleTokens(partialToken);
+			
+			while (possibleTokens.size() > 0) {
+				for (int i = 0; i < possibleTokens.size(); i++) {
+					if (possibleTokens.get(i).value.equals(partialToken)) {
+						//needs a lot more than just this like adding variables and shit, this is just to get the ball rollin
+						return new Token(possibleTokens.get(i).type, possibleTokens.get(i).value, possibleTokens.get(i).token);
+					}
 				}
+				
+				String next = fr.next();
+				if (next.trim().length() == 0) { // Whitespace check
+					break;
+				}
+				partialToken = partialToken + next;
+				possibleTokens = getPossibleTokens(partialToken);
 			}
 		}
 	}
