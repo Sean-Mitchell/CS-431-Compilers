@@ -88,18 +88,18 @@ public class Scanner {
 		validTokens.add(new Token(23, "&&", "<TAnd>"));
 		validTokens.add(new Token(24, "<", "<TLt>"));
 		validTokens.add(new Token(25, "+", "<TPlus>")); //From here down is unfinished
-		validTokens.add(new Token(26, "-", "<TCLASS>"));
-		validTokens.add(new Token(27, "*", "<TCLASS>"));
-		validTokens.add(new Token(28, ".", "<TCLASS>"));
-		validTokens.add(new Token(29, "length", "<TCLASS>"));
-		validTokens.add(new Token(30, ",", "<TCLASS>"));
-		validTokens.add(new Token(31, "true", "<TCLASS>"));
-		validTokens.add(new Token(32, "false", "<TCLASS>"));
-		validTokens.add(new Token(33, "this", "<TCLASS>"));
-		validTokens.add(new Token(34, "new", "<TCLASS>"));
-		validTokens.add(new Token(35, "!", "<TCLASS>"));
-		validTokens.add(new Token(36, "//", "<TCLASS>"));
-		validTokens.add(new Token(37, "/*", "<TCLASS>"));
-		validTokens.add(new Token(38, "*/", "<TCLASS>"));
+		validTokens.add(new Token(26, "-", "<TMinus>"));
+		validTokens.add(new Token(27, "*", "<TTimes>"));
+		validTokens.add(new Token(28, ".", "<TPeriod>"));
+		validTokens.add(new Token(29, "length", "<TLength>"));
+		validTokens.add(new Token(30, ",", "<TComma>"));
+		validTokens.add(new Token(31, "true", "<TTrue>"));
+		validTokens.add(new Token(32, "false", "<TFalse>"));
+		validTokens.add(new Token(33, "this", "<TThis>"));
+		validTokens.add(new Token(34, "new", "<TNew>"));
+		validTokens.add(new Token(35, "!", "<TExc>"));
+		validTokens.add(new Token(36, "//", "<TComments>"));
+		validTokens.add(new Token(37, "/*", "<TComments>"));
+		validTokens.add(new Token(38, "*/", ""));
 	}
 }
