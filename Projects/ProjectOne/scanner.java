@@ -87,7 +87,7 @@ public class Scanner {
 		validTokens.add(new Token(22, "=", "<TEqual>"));
 		validTokens.add(new Token(23, "&&", "<TAnd>"));
 		validTokens.add(new Token(24, "<", "<TLt>"));
-		validTokens.add(new Token(25, "+", "<TPlus>")); //From here down is unfinished
+		validTokens.add(new Token(25, "+", "<TPlus>"));
 		validTokens.add(new Token(26, "-", "<TMinus>"));
 		validTokens.add(new Token(27, "*", "<TTimes>"));
 		validTokens.add(new Token(28, ".", "<TPeriod>"));
@@ -101,5 +101,6 @@ public class Scanner {
 		validTokens.add(new Token(36, "//", "<TComments>"));
 		validTokens.add(new Token(37, "/*", "<TComments>"));
 		validTokens.add(new Token(38, "*/", ""));
+		validTokens.add(new Token(39, "<TInt><TPeriod><TInt>", "<TReal>"));
 	}
 }
