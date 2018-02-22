@@ -7,6 +7,7 @@ public class Scanner {
 	private static ArrayList<Token> validTokens = new ArrayList<>();
 	
 	public Token[] scanFile(String fileName) {
+		initializeValidTokens();
 		File f = new File(fileName);
 		FileReader fr = new FileReader(f);
 		
