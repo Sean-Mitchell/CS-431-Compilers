@@ -45,7 +45,7 @@ public class Scanner {
 			
 			String next = fr.read();
 			
-			if (next.trim().length() == 0) { // Whitespace check
+			if (next == null || next.trim().length() == 0 ) { // EOF and Whitespace check
 				break;
 			}
 			
