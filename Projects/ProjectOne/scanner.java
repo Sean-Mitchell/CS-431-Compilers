@@ -8,6 +8,7 @@ public class Scanner {
 	
 	public Token[] scanFile(String fileName) {
 		initializeValidTokens();
+		
 		File f = new File(fileName);
 		FileReader fr = new FileReader(f);
 		
@@ -39,7 +40,15 @@ public class Scanner {
 	}
 	
 	private Token[] getPossibleTokens(String partialToken) {
+		ArrayList<Token> possibleTokens = new ArrayList<>();
 		
+		for (int i = 0; i < validTokens.size(); i++) {
+			if (validTokens.get(i).substring(0, partialToken.length()).equals(partialToken)) {
+				possibleTokens.add(validTokens.get(i));
+			}
+		}
+		
+		return possibleTokens.toArray();
 	}
 	
 	private void initializeValidTokens() {
