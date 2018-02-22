@@ -23,7 +23,19 @@ public class Scanner {
 	}
 	
 	private Token getNextToken(FileReader fr) {
-		//TODO
+		String partialToken = "";
+		
+		partialToken = partialToken + fr.next();
+		Token[] possibleTokens = getPossibleTokens(partialToken);
+		
+		while (possibleTokens.size() > 0) {
+			for (int i = 0; i < possibleTokens.size(); i++) {
+				if (possibleTokens.get(i).value.equals(partialToken)) {
+					//needs a lot more than just this like adding variables and shit, this is just to get the ball rollin
+					return new Token(possibleTokens.get(i).value, possibleTokens.get(i).type);
+				}
+			}
+		}
 	}
 	
 	private Token[] getPossibleTokens(String partialToken) {
