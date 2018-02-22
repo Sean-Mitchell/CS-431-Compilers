@@ -24,29 +24,33 @@ public class Scanner {
 	}
 	
 	private Token getNextToken(FileReader fr) {
-		String partialToken = "";
+		String partialToken = fr.read();;
 		
-		partialToken = partialToken + fr.next();
+		while (partialToken.trim().length() == 0) {// Whitespace check
+			partialToken = fr.read();
+		}
 		
-		if (partialToken.trim().length() > 0) {// Whitespace check
+		if (partialToken == null) { // EOF check
+			return null;
+		}
 		
-			Token[] possibleTokens = getPossibleTokens(partialToken);
-			
-			while (possibleTokens.size() > 0) {
-				for (int i = 0; i < possibleTokens.size(); i++) {
-					if (possibleTokens.get(i).value.equals(partialToken)) {
-						//needs a lot more than just this like adding variables and shit, this is just to get the ball rollin
-						return new Token(possibleTokens.get(i).type, possibleTokens.get(i).value, possibleTokens.get(i).token);
-					}
+		Token[] possibleTokens = getPossibleTokens(partialToken);
+		
+		while (possibleTokens.size() > 0) {
+			for (int i = 0; i < possibleTokens.size(); i++) {
+				if (possibleTokens.get(i).value.equals(partialToken)) {
+					return new Token(possibleTokens.get(i).type, possibleTokens.get(i).value, possibleTokens.get(i).token);
 				}
-				
-				String next = fr.next();
-				if (next.trim().length() == 0) { // Whitespace check
-					break;
-				}
-				partialToken = partialToken + next;
-				possibleTokens = getPossibleTokens(partialToken);
 			}
+			
+			String next = fr.read();
+			
+			if (next.trim().length() == 0) { // Whitespace check
+				break;
+			}
+			
+			partialToken = partialToken + next;
+			possibleTokens = getPossibleTokens(partialToken);
 		}
 	}
 	
