@@ -7,6 +7,7 @@ public class Scanner {
 	private static ArrayList<Token> validTokens = new ArrayList<>();
 	
 	public Token[] scanFile(String fileName) {
+		initializeValidTokens();
 		File f = new File(fileName);
 		FileReader fr = new FileReader(f);
 		
@@ -60,5 +61,13 @@ public class Scanner {
 		validTokens.add(new Token(28, "."));
 		validTokens.add(new Token(29, "length"));
 		validTokens.add(new Token(30, ","));
+		validTokens.add(new Token(31, "true"));
+		validTokens.add(new Token(32, "false"));
+		validTokens.add(new Token(33, "this"));
+		validTokens.add(new Token(34, "new"));
+		validTokens.add(new Token(35, "!"));
+		validTokens.add(new Token(36, "//"));
+		validTokens.add(new Token(37, "/*"));
+		validTokens.add(new Token(38, "*/"));
 	}
 }
