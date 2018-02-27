@@ -1,0 +1,23 @@
+<project>
+	<!-- Deletes old build and old compiled project-->
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="src/Proj2Starter" />
+    </target>
+
+	<!-- Creates the classes directory
+		Runs sablecc
+		pushes the lexer to the classes directory
+		compiles it all together with java-->
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+
+        <java jar="sablecc.jar" fork="true">
+            <arg line="Proj2.js -d src" />
+        </java>
+
+        <copy todir="build/classes/Proj2Starter/lexer" file="src/Proj2Starter/lexer/lexer.dat" />
+
+        <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
+    </target>
+</project>
