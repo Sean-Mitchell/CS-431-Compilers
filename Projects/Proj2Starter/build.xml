@@ -26,7 +26,7 @@
 		pushes the lexer to the classes directory
 		compiles it all together with java-->
     <target name="run">
-        <java classname="Project2.Program1" classpath="build/classes"/>
+        <java classname="Main.Program1" classpath="build/classes" input="prog1.txt"/>
 		
     </target>
 	
