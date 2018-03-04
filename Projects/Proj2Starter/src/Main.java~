@@ -22,7 +22,7 @@ public class Main{
                         t = l.next();
                 }
 
-					Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(arguments[0]))));
+					Writer f new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(arguments[0]))));
             	f.write(sb.toString());
           		f.close();
 
