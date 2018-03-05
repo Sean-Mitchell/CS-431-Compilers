@@ -24,11 +24,9 @@ public class TokenScanner {
 		
 		ArrayList<Token> tokenList = new ArrayList<>();
 		Token next = getNextToken(fr);
-		System.out.println(next.toString());
 		while(keepGoing ){
 			tokenList.add(next);
 			next = getNextToken(fr);
-			System.out.println(next.toString());
 		}
 
 		returnArray = new Token[tokenList.size()];
@@ -41,22 +39,28 @@ public class TokenScanner {
 	
 	private static Token getNextToken(FileReader fr) {
 		String partialToken = "";
-		char tempChar = '';
+		char tempChar = Character.MIN_VALUE;
 		try {
 			tempChar = (char)fr.read();
-			if (tempChar == '\u100a' ) {keepGoing = false;}
+			
+			//end of file check return dummy token
+			if ((byte)tempChar == -1 ) {
+				keepGoing = false;
+				return new Token(-1, "", "");
+			}
+			
+			
 			partialToken = "" + tempChar;
 			while (partialToken.trim().length() == 0) {// Whitespace check
 				tempChar = (char)fr.read();
-				if (tempChar == '\u100a' ) {keepGoing = false;}
-					partialToken = "" + tempChar;
+				if ((byte)tempChar == -1 ) {
+					keepGoing = false;
+					return new Token(-1, "", "");
 				}
+				partialToken = "" + tempChar;
+			}
 		} catch (Exception e) {
 
-		}
-		
-		if (partialToken == null) { // EOF check
-			return null;
 		}
 		
 		Token[] possibleTokens = getPossibleTokens(partialToken);
@@ -71,26 +75,26 @@ public class TokenScanner {
 			String next = "";
 			
 			try {
+				System.out.println(partialToken);
 				next = "" + (char)fr.read();
 			} catch (Exception e) {}
 			
-			if (next == null || next.trim().length() == 0 ) { // EOF and Whitespace check
-				break;
+			if (next == null || next.trim().length() == 0 ) { 
+				if (!validTokens.contains(40)){
+					Token newToken = new Token(40, partialToken, "<TId>");
+					validTokens.add(newToken);
+					return newToken;
+				}
 			}
 
 			partialToken = partialToken + next;
 			possibleTokens = getPossibleTokens(partialToken);
 		}
-		
-		Token newToken = new Token(40, partialToken, "<TId>");
-		//Token newToken = new Token(41, partialToken, "<TNumber>");
-		validTokens.add(newToken);
-		return newToken;
+		return new Token(-1, "", "");
 	}
 	
 	private static Token[] getPossibleTokens(String partialToken) {
 		Token[] returnArray;
-		System.out.println(partialToken);
 		if (partialToken.length() == 0) {
 			returnArray = new Token[validTokens.size()];
 			for (int i = 0; i < validTokens.size(); i++) {
