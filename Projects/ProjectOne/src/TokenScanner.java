@@ -59,16 +59,26 @@ public class TokenScanner {
 				}
 				partialToken = "" + tempChar;
 			}
-		} catch (Exception e) {
-
-		}
 		
 		Token[] possibleTokens = getPossibleTokens(partialToken);
 		
 		while (possibleTokens.length > 0) {
 			for (int i = 0; i < possibleTokens.length; i++) {
 				if (possibleTokens[i].value.equals(partialToken)) {
-					return new Token(possibleTokens[i].type, possibleTokens[i].value, possibleTokens[i].token);
+					if (partialToken.equals("/*")){
+						//While the comments aren't over, keep reading
+						while ( !partialToken.substring(partialToken.length() - 2, 
+								partialToken.length()).equals("*/")) {
+							partialToken += (char)fr.read();
+						}
+						return new Token(possibleTokens[i].type, possibleTokens[i].value, possibleTokens[i].token);
+					} else if (partialToken.equals("//")) {
+						while ((char)fr.read() != '\n');
+						return new Token(possibleTokens[i].type, possibleTokens[i].value, possibleTokens[i].token);
+					} else {
+						return new Token(possibleTokens[i].type, possibleTokens[i].value, possibleTokens[i].token);
+					}
+					
 				}
 			}
 			
@@ -89,6 +99,9 @@ public class TokenScanner {
 
 			partialToken = partialToken + next;
 			possibleTokens = getPossibleTokens(partialToken);
+		}
+		} catch (Exception e) {
+
 		}
 		return new Token(-1, "", "");
 	}
@@ -131,8 +144,8 @@ public class TokenScanner {
 		validTokens.add(new Token(7, "}", "<TRcurly>"));
 		validTokens.add(new Token(8, "[", "<TLbracket>"));
 		validTokens.add(new Token(9, "]", "<TRbracket>"));
-		validTokens.add(new Token(10, "(", "<TRparen>"));
-		validTokens.add(new Token(11, ")", "<TLparen>"));
+		validTokens.add(new Token(10, "(", "<TLparen>"));
+		validTokens.add(new Token(11, ")", "<TRparen>"));
 		validTokens.add(new Token(12, "extends", "<TExtends>"));
 		validTokens.add(new Token(14, ";", "<TSemicolon>"));
 		validTokens.add(new Token(15, "return", "<TReturn>"));
