@@ -8,6 +8,9 @@ public class TokenScanner {
 	private static boolean keepGoing = true;
 	
 	public static Token[] scanFile(String fileName) {
+		if (fileName.equals("prog2.txt")) {
+			System.out.println("fdasfdsafds");
+		}
 		Token[] returnArray;
 		initializeValidTokens();
 		
@@ -85,7 +88,6 @@ public class TokenScanner {
 			String next = "";
 			
 			try {
-				System.out.println(partialToken);
 				next = "" + (char)fr.read();
 			} catch (Exception e) {}
 			
