@@ -90,10 +90,20 @@ public class TokenScanner {
 			} catch (Exception e) {}
 			
 			if (next == null || next.trim().length() == 0 ) { 
-				if (!validTokens.contains(40)){
-					Token newToken = new Token(40, partialToken, "<TId>");
-					validTokens.add(newToken);
-					return newToken;
+				if (!validTokens.contains(40) || !validTokens.contains(41)){
+					Token newToken = new Token(-1, "", "");
+					try {
+						Integer.parseInt(next);
+						newToken = new Token(41, partialToken, "<TNumber>");
+						validTokens.add(newToken);
+						return newToken;
+					} catch (Exception e) {
+						if (!validTokens.contains(40)) {
+							newToken = new Token(40, partialToken, "<TId>");
+							validTokens.add(newToken);
+							return newToken;
+						}
+					}
 				}
 			}
 
