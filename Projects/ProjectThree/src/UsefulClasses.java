@@ -136,22 +136,22 @@ class UnaryOp extends Operator
 	}
 }
 
-class Production
+class ProductionPart
 {
-	public ArrayList<Production> contents;
+	public ProductionPart[] contents;
 	public String name;
 	public boolean isTerminal;
 	public Token terminal;
 	
-	public Production(ArrayList<Production> contents, String name) {
+	public ProductionPart(ProductionPart[] contents, String name) {
 		this.contents = contents;
 		this.name = name;
 		this.isTerminal = false;
 		this.terminal = null;
 	}
 	
-	public Production(String name, Token terminal) {
-		this.contents = new ArrayList<>();
+	public ProductionPart(String name, Token terminal) {
+		this.contents = new ProductionPart[0];
 		this.name = name;
 		this.isTerminal = true;
 		this.terminal = terminal;
@@ -160,15 +160,15 @@ class Production
 
 class ParseTreeNode
 {
-	public Production prod;
+	public ProductionPart prod;
 	public ArrayList<ParseTreeNode> children;
 	
-	public ParseTreeNode(Production prod, ArrayList<ParseTreeNode> children) {
+	public ParseTreeNode(ProductionPart prod, ArrayList<ParseTreeNode> children) {
 		this.prod = prod;
 		this.children = children;
 	}
 	
-	public ParseTreeNode(Production prod) {
+	public ParseTreeNode(ProductionPart prod) {
 		this.prod = prod;
 		this.children = new ArrayList<>();
 	}
