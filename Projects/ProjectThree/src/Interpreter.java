@@ -1,4 +1,4 @@
-package Starter;
+package Project3;
 
 /*
 	Add methods to handle the traversal of other nodes in 
