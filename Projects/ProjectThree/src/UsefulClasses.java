@@ -135,3 +135,41 @@ class UnaryOp extends Operator
 		this.opType = opType;
 	}
 }
+
+class Production
+{
+	public ArrayList<Production> contents;
+	public String name;
+	public boolean isTerminal;
+	public Token terminal;
+	
+	public Production(ArrayList<Production> contents, String name) {
+		this.contents = contents;
+		this.name = name;
+		this.isTerminal = false;
+		this.terminal = null;
+	}
+	
+	public Production(String name, Token terminal) {
+		this.contents = new ArrayList<>();
+		this.name = name;
+		this.isTerminal = true;
+		this.terminal = terminal;
+	}
+}
+
+class ParseTreeNode
+{
+	public Production prod;
+	public ArrayList<ParseTreeNode> children;
+	
+	public ParseTreeNode(Production prod, ArrayList<ParseTreeNode> children) {
+		this.prod = prod;
+		this.children = children;
+	}
+	
+	public ParseTreeNode(Production prod) {
+		this.prod = prod;
+		this.children = new ArrayList<>();
+	}
+}

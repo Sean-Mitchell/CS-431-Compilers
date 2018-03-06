@@ -11,15 +11,20 @@ public class Main{
                 // Create a lexer instance.
                 Lexer l = new Lexer(new PushbackReader
 							(new InputStreamReader(System.in), 1024));
+							
+				ArrayList<Stmt> statementList = new ArrayList<>();
 
                 Token t = l.next();
                 while (!t.getText().equals("")){
                 			if (!t.getClass().getSimpleName().equals("TBlank")) {
                 				// add token to array
+								
                 			}
 
                         t = l.next();
                 }
+				// build tree of tokens
+				// turn arraylist into stmts
 
 				// interpret
 				
