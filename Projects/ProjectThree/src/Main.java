@@ -72,7 +72,8 @@ public class Main{
     	else if (currentToken.getClass().getSimpleName().equals("TPrint")){
     		//Reads left paren
         	currentToken = GetNextToken();
-        	returnString = "new PrintStmt(new ContinuingExpList(" + GetExpression() + "))";
+        	//This is broken I know
+        	returnString = "new PrintStmt(new LastExpList(" + GetExpression() + "))";
     		//Reads right paren
         	currentToken = GetNextToken();
     		return returnString;
