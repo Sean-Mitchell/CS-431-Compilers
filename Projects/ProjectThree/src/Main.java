@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Main{
 	static Lexer theLexer;
-	static StringBuilder ParseString;
 	static Token currentToken;
 	
     public static void main(String[] arguments){
@@ -16,14 +15,33 @@ public class Main{
         	theLexer = new Lexer(new PushbackReader
 						(new InputStreamReader(System.in), 1024));
 			
-        	ParseString = new StringBuilder();
-        	
-        	System.out.println(RecursiveParse());
-			
-			// build tree of tokens
-			// turn arraylist into stmts
 
-			// interpret
+        	StringBuilder ParseString = new StringBuilder();
+        	//get string of objects
+        	ParseString.append("package Project3;\n" + 
+        	"\n" + 
+        	"public class Program{\n" + 
+        	"  	private static Stmt program = ");
+        	
+        	ParseString.append(RecursiveParse());
+        	
+        	ParseString.append(";\n" + 
+        	"\n" + 
+        	"	public static void main(String[] args) {\n" + 
+        	"		//Create a new Interpreter Object\n" + 
+        	"	    Interpreter interpreter = new Interpreter();\n" + 
+        	"	    System.out.println(\"Evaluating...\");\n" + 
+        	"	    //Call the overloaded interpret method with the\n" + 
+        	"	    //static program created above. Should print out 34.\n" + 
+        	"	    interpreter.interpret(program);\n" + 
+        	"	}\n" + 
+        	"}\n" + 
+        	"";
+        	
+        	
+        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java")));
+        	f.write(ParseString.toString());
+      		f.close();
 			
         }
         catch(Exception e){ System.out.println(e.getMessage()); }
@@ -78,6 +96,8 @@ public class Main{
         	returnString = "new IdExp(" + currentToken.getText() + ")";
     		return returnString;
     	}
+    	
+    	//Ran out of time to finish this guy
     	/*else if (currentToken.getClass().getSimpleName().equals("TBinOp")){
     		return "new BinOp(" + GetBinOp() + ")";
     	}
