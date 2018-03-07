@@ -49,8 +49,6 @@ public class Main{
     	//Gets the first token
     	currentToken = GetNextToken();
     	if (currentToken.getClass().getSimpleName().equals("TId")) {
-    		//Reads left paren
-        	currentToken = GetNextToken();
         	returnString = "new AssignStmt(" + GetExpression() + ")";
     		//Reads right paren
         	currentToken = GetNextToken();
@@ -69,14 +67,23 @@ public class Main{
     
     //Gets the type of expression
     private static String GetExpression() {
+    	String returnString;
     	currentToken = GetNextToken();
-    	System.out.println(currentToken.getClass());
+    	//System.out.println(currentToken.getClass());
+    	
     	if (currentToken.getClass().getSimpleName().equals("TNumber")) {
     		return "new NumExp(" + currentToken.getText()  + ")";
     	}
     	else if (currentToken.getClass().getSimpleName().equals("TId")){
-    		return "new IdExp(" + currentToken.getText() + ")";
+        	returnString = "new IdExp(" + currentToken.getText() + ")";
+    		return returnString;
     	}
+    	/*else if (currentToken.getClass().getSimpleName().equals("TBinOp")){
+    		return "new BinOp(" + GetBinOp() + ")";
+    	}
+    	else if (currentToken.getClass().getSimpleName().equals("TUnaryOp")){
+    		return "new UnaryOp(" + GetUnaryOp + ")";
+    	}*/
     	return "";
     }
     
