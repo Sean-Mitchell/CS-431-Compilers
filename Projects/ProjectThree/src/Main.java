@@ -44,7 +44,7 @@ public class Main{
       		f.close();
 			
         }
-        catch(Exception e){ System.out.println(e.getMessage()); }
+        catch(Exception e){ System.out.println("There was an error parsing your input"); }
     }
     
     //Initializes the statement and uses a recursive end to create a list of statements
