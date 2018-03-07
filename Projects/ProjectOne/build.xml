@@ -9,8 +9,14 @@
     </target>
 
     <target name="run">
-      <java classname="Starter.Run" classpath="build/classes"  input="prog1.txt prog2.txt prog3.txt">
-			<arg line="prog1.txt prog2.txt prog3.txt"/>
+      <java classname="Starter.Run" classpath="build/classes"  input="prog1.txt">
+			<arg line="prog1.txt"/>
+		</java>
+        <java classname="Starter.Run" classpath="build/classes" input="prog2.txt">
+			<arg line="prog2.txt"/>
+		</java>
+        <java classname="Starter.Run" classpath="build/classes" input="prog3.txt">
+			<arg line="prog3.txt"/>
 		</java>
     </target>
     

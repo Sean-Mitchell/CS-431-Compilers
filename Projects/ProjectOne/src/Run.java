@@ -6,37 +6,28 @@ import java.util.*;
 
 public class Run {
 	public static void main(String[] args) {
+		System.out.println(args[0]);
+		String fileName = args[0];
+		Token[] tokens = TokenScanner.scanFile(args[0]);
+				
 		
-			Writer writer = null;
-		for (int i = 0; i < args.length; i++) {
-			
-			System.out.println(args[i]);
-			String fileName = args[i];
-			Token[] tokens = TokenScanner.scanFile(fileName);
-					
-			
-			//Output tokens to file
-			String fileToWriteTo = fileName.substring(0,fileName.indexOf(".")) + ".answer";
+		//Output tokens to file
+		String fileToWriteTo = fileName.substring(0,fileName.indexOf(".")) + ".answer";
+		Writer writer = null;
 
+		try {
+			writer = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(fileToWriteTo), "utf-8"));
+
+			for (int i = 0; i < tokens.length; i++) {
+				writer.write(tokens[i].token);
+			}
+		} catch (IOException ex) {
+			// Report
+		} finally {
 			try {
-				writer = new BufferedWriter(new OutputStreamWriter(
-						new FileOutputStream(fileToWriteTo), "utf-8"));
-
-				for (int j = 0; j < tokens.length; j++) {
-					writer.write(tokens[j].token);
-					if ( i != 0) {
-						
-				System.out.println(tokens[j].token);
-					}
-				}
-			} catch (IOException ex) {
-				// Report
-				System.out.println(ex.toString());
-			} finally {
-				try {
-					writer.close();
-				} catch (Exception ex) {
-				System.out.println(ex.toString());}
+				writer.close();
+			} catch (Exception ex) {/* ignore */
 			}
 		}
 	}

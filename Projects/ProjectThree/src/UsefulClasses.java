@@ -1,6 +1,8 @@
 package Project3;
 
 import java.util.*;
+import Project3.lexer.*;
+import Project3.node.*;
 
 /*
 	You will need to add many more classes to this file to get the interpreter 

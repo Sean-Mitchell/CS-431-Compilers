@@ -1,0 +1,35 @@
+Package Project3;
+
+Helpers
+            digit = ['0'..'9'];
+            lf = 10; 
+            sp = ' '; 
+			period = '.';
+Tokens
+			semicolon = ';';
+<<<<<<< HEAD:Projects/Proj3/src/Proj3.js
+=======
+			return = 'return';
+			int = 'int';
+			bool = 'boolean';
+            if = 'if';
+			else = 'else';
+			while = 'while';
+			print = 'echo';
+			equal = '=';
+			and = '&&';
+>>>>>>> 963b6676290670402799ffbf05ac881cebbccba0:Projects/ProjectThree/src/Proj3.js~
+			lt = '<';
+			plus = '+';
+			minus = '-';
+			times = '*';
+			blank = ( sp | 13 | lf| 9)+;
+			number = (digit)+ | ((digit)+ period (digit)*);
+			id = (['a'..'z'] | ['A'..'Z'])+;
+			echo = 'echo';
+			divide = '/';
+			mod = '%';
+			lshift = '<<';
+			rshift = '>>';
+Ignored Tokens
+			blank;
