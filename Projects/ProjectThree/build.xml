@@ -29,6 +29,11 @@
         <java classname="Project3.Main" classpath="build/classes" input="input/expression.txt"/>
     </target>
 	
+	
+    <target name="main">
+        <java classname="Project3.Pogram" classpath="build/classes"/>
+    </target>
+	
     <target name="all">
     	<antcall target="clean"></antcall>
 		<antcall target="compile"></antcall>

@@ -36,10 +36,10 @@ public class Main{
         	"	    interpreter.interpret(program);\n" + 
         	"	}\n" + 
         	"}\n" + 
-        	"";
+        	"");
         	
-        	
-        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java")));
+        	System.out.println(ParseString.toString());
+        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java"))));
         	f.write(ParseString.toString());
       		f.close();
 			
