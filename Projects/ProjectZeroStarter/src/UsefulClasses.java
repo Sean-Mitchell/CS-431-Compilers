@@ -8,9 +8,9 @@ import java.util.*;
 	to show you what to do for the remaining classes.
 */
 
-class IdHolder {
+/*class IdHolder {
 	static HashMap<String, Expression> idMap = new HashMap<>();
-}
+}*/
 
 abstract class Stmts {}
 
@@ -45,10 +45,10 @@ class AssignStmt extends Stmt{
     public IdExp id;
     public Expression exp;
     public AssignStmt(IdExp i, Expression e){
-        id = i;
-        exp = e;
-		
-		IdHolder.idMap.put(id.id, exp);
+      id = i;
+      exp = e;
+
+      //IdHolder.idMap.put(id.id, exp);
     }
 }
 
@@ -66,9 +66,9 @@ class IdExp extends Expression
 {
     public String id;
 	
-	public Expression getValue() {
+	/*public Expression getValue() {
 		return IdHolder.idMap.get(id);
-	}
+	}*/
 	
     public IdExp(String id){
         this.id = id;

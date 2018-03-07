@@ -1,5 +1,7 @@
 package Starter;
 
+import java.util.*;
+
 /*
 	Add methods to handle the traversal of other nodes in 
 	the syntax tree. Some methods will need to be updated. 
@@ -9,6 +11,8 @@ package Starter;
 */
 
 public class Interpreter{
+	
+	static HashMap<String, Expression> idMap = new HashMap<>();
 
 	public int interpret(Stmts stms) {
 		if (stms instanceof ContinuingStmts) {
@@ -44,8 +48,13 @@ public class Interpreter{
  	}
  	
  	public int interpret(AssignStmt stm) {
- 		Expression exp = stm.exp;
- 	   return this.interpret(exp);
+ 		if (stm.exp instanceof NumExp) {
+ 			System.out.println(stm.id.id);
+ 			idMap.put(stm.id.id, stm.exp);
+ 		} else {
+ 			idMap.put(stm.id.id, new NumExp(interpret(stm.exp)));
+ 		}
+ 	   return 0;
  	}
 
  	public int interpret(Expression exp) {
@@ -69,8 +78,8 @@ public class Interpreter{
  	}
  	
  	public int interpret(IdExp exp) {
- 		
-		if (exp.getValue() instanceof NumExp) {
+ 		return interpret(idMap.get(exp.id));
+		/*if (exp.getValue() instanceof NumExp) {
 			return interpret((NumExp)exp.getValue());			
 		} else if (exp.getValue() instanceof IdExp) {
 			return interpret((IdExp)exp.getValue());		
@@ -78,7 +87,7 @@ public class Interpreter{
 			return interpret((BinExp)exp.getValue());	
 		} else {
 			return interpret((UnaryExp)exp.getValue());
-		}
+		}*/
  	}
  	
  	public int interpret(BinExp exp) {
@@ -95,8 +104,8 @@ public class Interpreter{
  	public int interpret(UnaryExp exp) {
  		int expVal = this.interpret(exp.exp);
     	switch(exp.op.opType){
-    		case 0: return 1 << expVal;
-    		case 1: return 1 >> expVal;
+    		case 0: return expVal << 1;
+    		case 1: return expVal >> 1;
     		default: return 0;
     	}
  	}
