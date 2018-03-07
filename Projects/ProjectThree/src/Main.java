@@ -36,15 +36,15 @@ public class Main{
         	"	    interpreter.interpret(program);\n" + 
         	"	}\n" + 
         	"}\n" + 
-        	"";
+        	"");
         	
-        	
-        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java")));
+        	System.out.println(ParseString.toString());
+        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java"))));
         	f.write(ParseString.toString());
       		f.close();
 			
         }
-        catch(Exception e){ System.out.println(e.getMessage()); }
+        catch(Exception e){ System.out.println("There was an error parsing your input"); }
     }
     
     //Initializes the statement and uses a recursive end to create a list of statements
