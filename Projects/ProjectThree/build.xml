@@ -3,6 +3,7 @@
     <target name="clean">
         <delete dir="build"/>
         <delete dir="src/Project3" />
+		<delete file="src/ProgExpr.java" failonerror="false"/>
     </target>
 
 	<!-- Creates the classes directory
@@ -31,7 +32,7 @@
 	
 	
     <target name="main">
-        <java classname="Project3.Pogram" classpath="build/classes"/>
+        <java classname="Project3.ProgExpr" classpath="build/classes"/>
     </target>
 	
     <target name="all">

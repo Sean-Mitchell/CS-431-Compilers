@@ -20,26 +20,23 @@ public class Main{
         	//get string of objects
         	ParseString.append("package Project3;\n" + 
         	"\n" + 
-        	"public class Program{\n" + 
-        	"  	private static Stmt program = ");
+        	"public class ProgExpr{\n" + 
+        	"  	private static Stmts program = ");
         	
         	ParseString.append(RecursiveParse());
         	
         	ParseString.append(";\n" + 
         	"\n" + 
         	"	public static void main(String[] args) {\n" + 
-        	"		//Create a new Interpreter Object\n" + 
         	"	    Interpreter interpreter = new Interpreter();\n" + 
         	"	    System.out.println(\"Evaluating...\");\n" + 
-        	"	    //Call the overloaded interpret method with the\n" + 
-        	"	    //static program created above. Should print out 34.\n" + 
         	"	    interpreter.interpret(program);\n" + 
         	"	}\n" + 
         	"}\n" + 
         	"");
         	
         	System.out.println(ParseString.toString());
-        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("ProgExpr.java"))));
+        	Writer f = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File("src/ProgExpr.java"))));
         	f.write(ParseString.toString());
       		f.close();
 			
@@ -49,7 +46,7 @@ public class Main{
     
     //Initializes the statement and uses a recursive end to create a list of statements
     private static String RecursiveParse() {
-    	String returnString = "new Stmts(" + GetStatement();
+    	String returnString = "new ContinuingStmts(" + GetStatement();
     	
     	//Keep going, there are other statements to parse
     	currentToken = GetNextToken();
@@ -75,7 +72,7 @@ public class Main{
     	else if (currentToken.getClass().getSimpleName().equals("TPrint")){
     		//Reads left paren
         	currentToken = GetNextToken();
-        	returnString = "new PrintStmt(" + GetExpression() + ")";
+        	returnString = "new PrintStmt(new ContinuingExpList(" + GetExpression() + "))";
     		//Reads right paren
         	currentToken = GetNextToken();
     		return returnString;
