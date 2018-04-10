@@ -1,0 +1,43 @@
+<project>
+	<!-- Deletes old build and old compiled project-->
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="src/Project4" />
+		<delete file="src/ProgExpr.java" failonerror="false"/>
+    </target>
+
+	<!-- Creates the classes directory
+		Runs sablecc
+		pushes the lexer to the classes directory
+		compiles it all together with java-->
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+
+        <java jar="src/sablecc.jar" fork="true">
+            <arg line="src/ProjFour.js -d src" />
+        </java>
+
+        <copy todir="build/classes/Project4/lexer" file="src/Project4/lexer/lexer.dat" />
+
+        <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
+    </target>
+    
+	<!-- Creates the classes directory
+		Runs sablecc
+		pushes the lexer to the classes directory
+		compiles it all together with java-->
+    <target name="run">
+        <java classname="Project4.Main" classpath="build/classes" input="input/expression.txt"/>
+    </target>
+	
+	
+    <target name="main">
+        <java classname="Project4.ProgExpr" classpath="build/classes"/>
+    </target>
+	
+    <target name="all">
+    	<antcall target="clean"></antcall>
+		<antcall target="compile"></antcall>
+		<antcall target="run"></antcall>
+    </target>
+</project>

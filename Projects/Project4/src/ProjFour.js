@@ -4,7 +4,7 @@ Helpers
     sp  = ' ';
     number = ['0'..'9'];
     letter = ['a'..'z'] | ['A'..'Z'];
-    anyChar = [35..255];
+    anychar = [35..255];
 	dot = '.';
 
 	add = '+';
@@ -24,23 +24,21 @@ Helpers
 Tokens
     id = letter (letter | number)*;
     digit = number+;
-	real = number+ dot number+
+	real = number+ dot number+;
 	string = quote (number | letter)* quote;
     whitespace = sp+;
-	anyChars = anyChar+;
+	anychars = anychar+;
 	begin = 'BEGIN';
 	end = 'END';
 	true = 'TRUE';
 	false = 'FALSE';
 	
 	equivalent = '==';
-	notEquivalent = '!=';
+	notequivalent = '!=';
 	geq = '>=';
 	leq = '<=';
 	less = '<';
 	greater = '>';
-
-	optionInt = 
 
 Ignored Tokens
   whitespace;
@@ -53,37 +51,37 @@ Productions
     morenumbers = {fourth} digit morenumbers |
     		  {emptyproduction} ;
 
-	Factor = lparen Exp rparen |
-				subtract Factor |
-				Int | Real |
-				Boolean | 
+	factor = {first} paren exp rparen |
+				{second} subtract factor |
+				{third} int | real |
+				{fourth} boolean ;
 				
 	
 
-	String = string;
+	string = string;
 	
-	Boolean = true | false |
-				Expr Cond Expr | 
-				Id;
+	boolean = {first} true | false |
+		{second} [first]:expr cond [second]:expr | 
+			{third} id;
 
-	Cond = equivalent |
-			notEquivalent |
-			geq | leq |
-			greater | less;
+	cond = {first} equivalent |
+		{second} notequivalent |
+		{third} geq | {fourth} leq |
+		{fifth} greater | {sixth} less;
 
-	AddOp = add | subtract;
-	MultOp = times | divide;
+	addop = {first} add | {second} subtract;
+	multop = {first} times | {second} divide;
 
-	Type = Int | 
-			Real |
-			String |
-			Boolean |
-			Void | 
-			Id;
+	type = {first} int | 
+		{second} real |
+		{third} string |
+		{fourth} boolean |
+		{fifth} void | 
+		{sixth} id;
 			
-	Id = id;
-	Int = number;
-	Real = real;
-	AnyChars = anyChars;
-	Letter = letter;
-	Digit = number;
+	id = id;
+	int = number;
+	real = real;
+	anychars = anychars;
+	letter = letter;
+	digit = number;
