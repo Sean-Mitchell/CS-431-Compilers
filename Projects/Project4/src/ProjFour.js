@@ -119,9 +119,9 @@ Productions
 		
 	string = stringtok;
 	
-	boolean = {first} true | false |
+	boolean = {first} true | {fourth}false |
 		{second} [first]:expr cond [second]:expr | 
-			{third} id;
+		{third} id;
 
 	cond = {first} equivalent |
 		{second} notequivalent |
