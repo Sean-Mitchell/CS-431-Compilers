@@ -13,8 +13,8 @@ Helpers
 	divide = '/';
 
 	quote = '"';
-	lparen = '(';
-	rparen = ')';	
+	lparenh = '(';
+	rparenh = ')';	
 	lbracket = '[';
 	rbracket = ']';
 
@@ -22,8 +22,11 @@ Helpers
     alphanumeric = letter | number;
     
 Tokens
-    id = letter (letter | number)*;
-    digit = number+;
+	lparen = lparenh;
+	rparen = rparenh;
+    idtok = letter (letter | number)*;
+    digittok = number+;
+	digsing = number;
 	real = number+ dot number+;
 	string = quote (number | letter)* quote;
     whitespace = sp+;
@@ -44,14 +47,14 @@ Ignored Tokens
   whitespace;
 
 Productions
-    prog = {first} id digit |
+    prog = {first} id digittok |
     	   {second} lotnumbers |
-    	   {third} [eachsymbolisuniqueinaproduction]:id [secondid]:id [digitone]:digit [digittwo]:digit ;
-    lotnumbers = digit morenumbers;
-    morenumbers = {fourth} digit morenumbers |
+    	   {third} [eachsymbolisuniqueinaproduction]:id [secondid]:id [digitone]:digittok [digittwo]:digittok ;
+    lotnumbers = digittok morenumbers;
+    morenumbers = {fourth} digittok morenumbers |
     		  {emptyproduction} ;
 
-	factor = {first} paren exp rparen |
+	factor = {first} lparen exp rparen |
 				{second} subtract factor |
 				{third} int | real |
 				{fourth} boolean ;
@@ -79,9 +82,9 @@ Productions
 		{fifth} void | 
 		{sixth} id;
 			
-	id = id;
-	int = number;
+	id = idtok;
+	int = digittok;
 	real = real;
 	anychars = anychars;
 	letter = letter;
-	digit = number;
+	digit = digsing;
