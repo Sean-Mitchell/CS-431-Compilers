@@ -80,18 +80,18 @@ Productions
 		
 	classmethodstmt = {first} class id lcurly methodstmtseqs rcurly |
 		{second} type id lparen varlist rparen lcurly stmtseq rcurly |
-		{third} [first]:id (comma [second]:id)* colon type semicolon ;
+		{third} id commaid* colon type semicolon ;
 		
 	methodstmtseqs = {first} methodstmtseqs methodstmtseq |
 		{empty} ;
 		
 	methodstmtseq = {first} type id lparen varlist rparen lcurly stmtseq rcurly |
-		{second} [first]:id (comma [second]:id)* colon type semicolon ;
+		{second} id commaid* colon type semicolon ;
 		
 	stmtseq = {first} stmt stmtseq |
 		{empty} ;
 		
-	stmt = {third} [first]:id (comma [second]:id)* colon type (lbrack int rbrack)? semicolon |
+	stmt = {third} id commaid* colon type (lbrack int rbrack)? semicolon |
 		{fourth} if lparen boolean rparen then [first]:lcurly [first]:stmtseq [first]:rcurly (else [second]:lcurly [second]:stmtseq [second]:rcurly)? |
 		{fifth} while lparen boolean rparen lcurly stmtseq rcurly |
 		{sixth} for lparen (type)? id [first]:colon [first]:equal [first]:expr [first]:semicolon boolean [second]:semicolon ([first]:id [first]:plus [second]:plus | [second]:id [first]:minus [second]:minus | [third]:id [second]:colon [second]:equal [second]:expr) rparen lcurly stmtseq rcurly |
@@ -137,10 +137,13 @@ Productions
 		{fourth} boolean |
 		{fifth} void | 
 		{sixth} id ; 
-			
+	
+
+	
 	id = idtok ;
 	int = digittok ;
 	real = real ;
 	anychars = anychars ;
 	letter = letter ;
 	digit = digsing ;
+	commaid = comma id ;
