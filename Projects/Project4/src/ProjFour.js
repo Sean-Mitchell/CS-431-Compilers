@@ -28,7 +28,7 @@ Tokens
     digittok = number+;
 	digsing = number;
 	real = number+ dot number+;
-	string = quote (number | letter)* quote;
+	stringtok = quote (number | letter)* quote;
     whitespace = sp+;
 	anychars = anychar+;
 	begin = 'BEGIN';
@@ -80,30 +80,44 @@ Productions
 		
 	classmethodstmt = {first} class id lcurly methodstmtseqs rcurly |
 		{second} type id lparen varlist rparen lcurly stmtseq rcurly |
-		{third} id (comma id)* colon type semicolon ;
+		{third} [first]:id (comma [second]:id)* colon type semicolon ;
 		
 	methodstmtseqs = {first} methodstmtseqs methodstmtseq |
 		{empty} ;
 		
 	methodstmtseq = {first} type id lparen varlist rparen lcurly stmtseq rcurly |
-		{second} id (comma id)* colon type semicolon ;
+		{second} [first]:id (comma [second]:id)* colon type semicolon ;
 		
 	stmtseq = {first} stmt stmtseq |
 		{empty} ;
 		
-	stmt = {third} id (comma id)* colon type (lbrack int rbrack)? semicolon |
-		{fourth} if lparen boolean rparen then lcurly stmtseq rcurly (else lcurly stmtseq rcurly)? |
+	stmt = {third} [first]:id (comma [second]:id)* colon type (lbrack int rbrack)? semicolon |
+		{fourth} if lparen boolean rparen then [first]:lcurly [first]:stmtseq [first]:rcurly (else [second]:lcurly [second]:stmtseq [second]:rcurly)? |
 		{fifth} while lparen boolean rparen lcurly stmtseq rcurly |
-		{sixth} for lparen (type)? id colon equal expr semicolon boolean semicolon (id plus plus | id minus minus | id colon equal expr) rparen lcurly stmtseq rcurly |
+		{sixth} for lparen (type)? id [first]:colon [first]:equal [first]:expr [first]:semicolon boolean [second]:semicolon ([first]:id [first]:plus [second]:plus | [second]:id [first]:minus [second]:minus | [third]:id [second]:colon [second]:equal [second]:expr) rparen lcurly stmtseq rcurly |
 		{seventh} id ( lbrack int rbrack )? colon equal get lparen rparen semicolon |
 		{eigth} put lparen id (lbrack int rbrack)? rparen semicolon |
-		{ninth} id (lbrack int rbrack)? (plus plus semicolon | minus minus semicolon | colon equal new id lparen rparen semicolon | colon equal (expr semicolon | quote anychars quote semicolon | boolean semicolon)) |
+		{ninth} [first]:id (lbrack int rbrack)? ([first]:plus [second]:plus [first]:semicolon | [first]:minus [second]:minus [second]:semicolon | [first]:colon [first]:equal new [second]:id lparen rparen [third]:semicolon | [second]:colon [second]:equal (expr [fourth]:semicolon | [first]:quote anychars [second]:quote [fifth]:semicolon | boolean [sixth]:semicolon)) |
 		{tenth} id lparen varlisttwo rparen semicolon |
-		{eleventh} id (lbrack int rbrack)? dot id lparen varlisttwo rparen (dot id lparen varlisttwo rparen )* semicolon |
+		{eleventh} [first]:id (lbrack int rbrack)? [first]:dot [second]:id [first]:lparen [first]:varlisttwo [first]:rparen ([second]:dot [third]:id [second]:lparen [second]:varlisttwo [second]:rparen )* semicolon |
 		{twelfth} return expr semicolon |
-		{thirteenth} 
+		{thirteenth} switch [first]:lparen expr [first]:rparen lcurly [first]:case [second]:lparen [first]:int [second]:rparen [first]:colon [first]:stmtseq ([first]:break [first]:semicolon)? ([second]:case [third]:lparen [second]:int [third]:rparen [second]:colon [second]:stmtseq ([second]:break [second]:semicolon)?)* default [third]:colon [third]:stmtseq rcurly ;
 		
-	string = string;
+	varlist = ([first]:id [first]:colon [first]:type ([first]:lbrack [first]:int [first]:rbrack)? (comma [second]:id [second]:colon [second]:type ([second]:lbrack [second]:int [second]:rbrack)?)*)? ;
+	
+	varlisttwo = ([first]:expr (comma [second]:expr)*)? ;
+	
+	expr = {first} expr addop term |
+		{second} term ;
+		
+	factor = {first} lparen expr rparen |
+		{second} minus factor |
+		{third} int |
+		{fourth} real |
+		{fifth} boolean |
+		{sixth} [first]:id (((lbrack int rbrack)? (dot [second]:id [first]:lparen [first]:varlisttwo [first]:rparen)?) | ([second]:lparen [second]:varlisttwo [second]:rparen)) ;
+		
+	string = stringtok;
 	
 	boolean = {first} true | false |
 		{second} [first]:expr cond [second]:expr | 
