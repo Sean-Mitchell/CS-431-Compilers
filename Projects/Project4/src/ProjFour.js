@@ -154,7 +154,7 @@ Productions
 	bigcommaids = {first} bigcommaid bigcommaids |
 		{empty} ;
 		
-	bigcommaid = comma [second]:id [second]:colon [second]:type optbracknum
+	bigcommaid = comma [second]:id [second]:colon [second]:type optbracknum ;
 	
 	varlisttwo = varlisttwoornah ;
 	
