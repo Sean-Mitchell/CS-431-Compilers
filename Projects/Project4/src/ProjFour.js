@@ -27,8 +27,8 @@ Tokens
     idtok = letter (letter | number)*;
     digittok = number+;
 	digsing = number;
-	real = number+ dot number+;
-	stringtok = quote (number | letter)* quote;
+	real = number+ '.' number+;
+	stringtok = '"' (number | letter)* '"';
     whitespace = sp+;
 	anychars = anychar+;
 	begin = 'BEGIN';
