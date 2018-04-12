@@ -17,8 +17,20 @@ Helpers
 	rparenh = ')';	
 	lbracket = '[';
 	rbracket = ']';
-	dot = '.';
 
+
+    alphanumeric = letter | number;
+    
+Tokens
+	lparen = lparenh;
+	rparen = rparenh;
+    idtok = letter (letter | number)*;
+    digittok = number+;
+	digsing = number;
+	real = number+ dot number+;
+	stringtok = quote (number | letter)* quote;
+    whitespace = sp+;
+	anychars = anychar+;
 	begin = 'BEGIN';
 	end = 'END';
 	true = 'TRUE';
@@ -44,6 +56,7 @@ Helpers
 	get = 'GET';
 	new = 'NEW';
 	return = 'RETURN';
+	dot = '.';
 	switch = 'SWITCH';
 	case = 'CASE';
 	break = 'BREAK';
@@ -56,19 +69,6 @@ Helpers
 	less = '<';
 	greater = '>';
 
-    alphanumeric = letter | number;
-    
-Tokens
-	lparen = lparenh;
-	rparen = rparenh;
-    idtok = letter (letter | number)*;
-    digittok = number+;
-	digsing = number;
-	real = number+ dot number+;
-	stringtok = quote (number | letter)* quote;
-    whitespace = sp+;
-	anychars = anychar+;
-
 Ignored Tokens
   whitespace;
 
@@ -76,52 +76,28 @@ Productions
     prog = begin classmethodstmts end;
 	
 	classmethodstmts = {first} classmethodstmts classmethodstmt |
-		{empty};
+		{empty} ;
 		
 	classmethodstmt = {first} class id lcurly methodstmtseqs rcurly |
 		{second} type id lparen varlist rparen lcurly stmtseq rcurly |
-<<<<<<< HEAD
-<<<<<<< HEAD
 		{third} [first]:id commaids colon type semicolon ;
 		
 	commaids = {first} commaid commaids |
 		{empty} ;
 		
 	commaid = comma id;
-=======
-		{third} id commaid* colon type semicolon ;
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
-=======
-		{third} id commaid* colon type semicolon ;
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
 		
 	methodstmtseqs = {first} methodstmtseqs methodstmtseq |
 		{empty} ;
 		
 	methodstmtseq = {first} type id lparen varlist rparen lcurly stmtseq rcurly |
-<<<<<<< HEAD
-<<<<<<< HEAD
 		{second} [first]:id commaids colon type semicolon ;
-=======
-		{second} id commaid* colon type semicolon ;
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
-=======
-		{second} id commaid* colon type semicolon ;
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
 		
 	stmtseq = {first} stmt stmtseq |
 		{empty} ;
 		
-<<<<<<< HEAD
-<<<<<<< HEAD
 	stmt = {third} [first]:id commaids colon type optbracknum semicolon |
 		{fourth} if lparen boolean rparen then [first]:lcurly [first]:stmtseq [first]:rcurly optelse |
-=======
-=======
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
-	stmt = {third} id commaid* colon type (lbrack int rbrack)? semicolon |
-		{fourth} if lparen boolean rparen then [first]:lcurly [first]:stmtseq [first]:rcurly (else [second]:lcurly [second]:stmtseq [second]:rcurly)? |
->>>>>>> f12a0a20d9af024e497188b8a6e534e555b56235
 		{fifth} while lparen boolean rparen lcurly stmtseq rcurly |
 		{sixth} for lparen opttype id [first]:colon [first]:equal [first]:expr [first]:semicolon boolean [second]:semicolon bigora rparen lcurly stmtseq rcurly |
 		{seventh} id optbracknum colon equal get lparen rparen semicolon |
@@ -210,29 +186,26 @@ Productions
 	
 	boolean = {first} true | {fourth}false |
 		{second} [first]:expr cond [second]:expr | 
-		{third} id ;
+		{third} id;
 
 	cond = {first} equivalent |
 		{second} notequivalent |
 		{third} geq | {fourth} leq |
-		{fifth} greater | {sixth} less ;
+		{fifth} greater | {sixth} less;
 
 	addop = {first} add | {second} subtract;
-	multop = {first} times | {second} divide ;
+	multop = {first} times | {second} divide;
 
 	type = {first} int | 
 		{second} real |
 		{third} string |
 		{fourth} boolean |
 		{fifth} void | 
-		{sixth} id ; 
-	
-
-	
-	id = idtok ;
-	int = digittok ;
-	real = real ;
-	anychars = anychars ;
-	letter = letter ;
-	digit = digsing ;
-	commaid = comma id ;
+		{sixth} id;
+			
+	id = idtok;
+	int = digittok;
+	real = real;
+	anychars = anychars;
+	letter = letter;
+	digit = digsing;
