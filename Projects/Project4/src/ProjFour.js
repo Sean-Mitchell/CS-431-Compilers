@@ -7,11 +7,6 @@ Helpers
     anychar = [35..255];
 	
 
-	add = '+';
-	subtract = '-';
-	times = '*';
-	divide = '/';
-
 	
 	lparenh = '(';
 	rparenh = ')';	
@@ -61,6 +56,7 @@ Tokens
 	case = 'CASE';
 	break = 'BREAK';
 	default = 'DEFAULT';
+	void = 'VOID';
 	
 	equivalent = '==';
 	notequivalent = '!=';
@@ -68,6 +64,11 @@ Tokens
 	leq = '<=';
 	less = '<';
 	greater = '>';
+
+	add = '+';
+	subtract = '-';
+	times = '*';
+	divide = '/';
 
 Ignored Tokens
   whitespace;
@@ -134,7 +135,7 @@ Productions
 		{second} colon equal bigord ;
 	
 	bigord = {first} expr semicolon |
-		{second} [first]:quote anychars [second]:quote semicolon |
+		{second} [first]:quote anycharsprod [second]:quote semicolon |
 		{third} boolean semicolon ;
 	
 	opttype = {first} type |
@@ -169,6 +170,9 @@ Productions
 	expr = {first} expr addop term |
 		{second} term ;
 		
+	term = {first} term multop factor |
+		{second} factor ;
+		
 	factor = {first} lparen expr rparen |
 		{second} minus factor |
 		{third} int |
@@ -185,8 +189,7 @@ Productions
 	string = stringtok;
 	
 	boolean = {first} true | {fourth}false |
-		{second} [first]:expr cond [second]:expr | 
-		{third} id;
+		{second} [first]:expr cond [second]:expr ;
 
 	cond = {first} equivalent |
 		{second} notequivalent |
@@ -197,7 +200,7 @@ Productions
 	multop = {first} times | {second} divide;
 
 	type = {first} int | 
-		{second} real |
+		{second} realp |
 		{third} string |
 		{fourth} boolean |
 		{fifth} void | 
@@ -205,7 +208,8 @@ Productions
 			
 	id = idtok;
 	int = digittok;
-	real = real;
-	anychars = anychars;
+	realp = real;
+	anycharsprod = anychars;
 	letter = letter;
 	digit = digsing;
+	voidprod = void;
