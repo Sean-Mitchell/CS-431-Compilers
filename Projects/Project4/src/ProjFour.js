@@ -35,7 +35,7 @@ Tokens
 	end = 'END';
 	true = 'TRUE';
 	false = 'FALSE';
-	class = 'CLASS';
+	classs = 'CLASS';
 	lcurly = '{';
 	rcurly = '}';
 	comma = ',';
@@ -78,7 +78,7 @@ Productions
 	classmethodstmts = {first} classmethodstmts classmethodstmt |
 		{empty} ;
 		
-	classmethodstmt = {first} class id lcurly methodstmtseqs rcurly |
+	classmethodstmt = {first} classs id lcurly methodstmtseqs rcurly |
 		{second} type id lparen varlist rparen lcurly stmtseq rcurly |
 		{third} [first]:id commaids colon type semicolon ;
 		
@@ -97,45 +97,45 @@ Productions
 		{empty} ;
 		
 	stmt = {third} [first]:id commaids colon type optbracknum semicolon |
-		{fourth} if lparen boolean rparen then [first]:lcurly [first]:stmtseq [first]:rcurly optelse |
+		{fourth} if lparen boolean rparen then [first]:lcurly [second]:stmtseq [third]:rcurly optelse |
 		{fifth} while lparen boolean rparen lcurly stmtseq rcurly |
-		{sixth} for lparen opttype id [first]:colon [first]:equal [first]:expr [first]:semicolon boolean [second]:semicolon bigora rparen lcurly stmtseq rcurly |
+		{sixth} for lparen opttype id [first]:colon [second]:equal [third]:expr [fourth]:semicolon boolean [fifth]:semicolon bigora rparen lcurly stmtseq rcurly |
 		{seventh} id optbracknum colon equal get lparen rparen semicolon |
 		{eigth} put lparen id optbracknum rparen semicolon |
 		{ninth} [first]:id optbracknum bigorb |
 		{tenth} id lparen varlisttwo rparen semicolon |
-		{eleventh} [first]:id optbracknum [first]:dot [second]:id [first]:lparen [first]:varlisttwo [first]:rparen dotidthings semicolon |
+		{eleventh} [first]:id optbracknum dot [second]:id lparen varlisttwo rparen dotidthings semicolon |
 		{twelfth} return expr semicolon |
-		{thirteenth} switch [first]:lparen expr [first]:rparen lcurly [first]:case [second]:lparen [first]:int [second]:rparen [first]:colon [first]:stmtseq breakornah cases default [third]:colon [third]:stmtseq rcurly ;
+		{thirteenth} switch [lparen1]:lparen expr [rparen1]:rparen lcurly case [lparen2]:lparen [first]:int [rparen2]:rparen [colon1]:colon [stmtseq1]:stmtseq breakornah cases default [colon2]:colon [stmtseq2]:stmtseq rcurly ;
 	
 	cases = {first} cases singcase |
 		{empty} ;
 		
-	singcase = [second]:case [third]:lparen [second]:int [third]:rparen [second]:colon [second]:stmtseq breakornah ;
+	singcase = case lparen int rparen colon stmtseq breakornah ;
 	
-	breakornah = {first} [first]:break [first]:semicolon |
+	breakornah = {first} break semicolon |
 		{empty} ;
 	
 	dotidthings = {first} dotidthings dotidthing |
 		{empty} ;
 		
-	dotidthing = [second]:dot [third]:id [second]:lparen [second]:varlisttwo [second]:rparen;
+	dotidthing = dot id lparen varlisttwo rparen;
 	
-	bigora = {first} [first]:id [first]:plus [second]:plus |
-		{second} [second]:id [first]:minus [second]:minus |
-		{third} [third]:id [second]:colon [second]:equal [second]:expr ;
+	bigora = {first} id [first]:plus [second]:plus |
+		{second} id [first]:minus [second]:minus |
+		{third} id colon equal expr ;
 		
-	bigorb = {first} [first]:plus [second]:plus [first]:semicolon |
-		{second} [first]:minus [second]:minus [second]:semicolon |
-		{third} [first]:colon [first]:equal new [second]:id lparen rparen [third]:semicolon |
+	bigorb = {first} [first]:plus [second]:plus semicolon |
+		{second} [first]:minus [second]:minus semicolon |
+		{third} colon equal new id lparen rparen semicolon |
 		{fourth} bigorc ;
 	
-	bigorc = {first} [first]:colon [first]:equal new [second]:id lparen rparen [third]:semicolon |
-		{second} [second]:colon [second]:equal bigord ;
+	bigorc = {first} colon equal new id lparen rparen semicolon |
+		{second} colon equal bigord ;
 	
-	bigord = {first} expr [fourth]:semicolon |
-		{second} [first]:quote anychars [second]:quote [fifth]:semicolon |
-		{third} boolean [sixth]:semicolon ;
+	bigord = {first} expr semicolon |
+		{second} [first]:quote anychars [second]:quote semicolon |
+		{third} boolean semicolon ;
 	
 	opttype = {first} type |
 		{empty} ;
@@ -143,28 +143,28 @@ Productions
 	optbracknum = {first} lbrack int rbrack |
 		{empty} ;
 		
-	optelse = {first} else [second]:lcurly [second]:stmtseq [second]:rcurly |
+	optelse = {first} else lcurly stmtseq rcurly |
 		{empty} ;
 	
 	varlist = varlistornah ;
 	
-	varlistornah = {first} [first]:id [first]:colon [first]:type optbracknum bigcommaids |
+	varlistornah = {first} id colon type optbracknum bigcommaids |
 		{empty} ;
 		
 	bigcommaids = {first} bigcommaid bigcommaids |
 		{empty} ;
 		
-	bigcommaid = comma [second]:id [second]:colon [second]:type optbracknum ;
+	bigcommaid = comma id colon type optbracknum ;
 	
 	varlisttwo = varlisttwoornah ;
 	
-	varlisttwoornah = {first} [first]:expr commaexprs |
+	varlisttwoornah = {first} expr commaexprs |
 		{empty} ;
 		
 	commaexprs = {first} commaexpr commaexprs |
 		{empty} ;
 		
-	commaexpr = comma [second]:expr;
+	commaexpr = comma expr;
 	
 	expr = {first} expr addop term |
 		{second} term ;
@@ -177,7 +177,7 @@ Productions
 		{sixth} [first]:id bigore ;
 		
 	bigore = {first} optbracknum optdotidthing |
-		{second} [second]:lparen [second]:varlisttwo [second]:rparen ;
+		{second} lparen varlisttwo rparen ;
 	
 	optdotidthing = {first} dotidthing |
 		{empty} ;
