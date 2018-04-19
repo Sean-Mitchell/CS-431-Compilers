@@ -97,15 +97,15 @@ Productions
 	stmtseq = {first} stmt stmtseq |
 		{empty} ;
 		
-	stmt = {third} [first]:id commaids colon type optbracknum semicolon |
-		{fourth} if lparen boolean rparen then [first]:lcurly [second]:stmtseq [third]:rcurly optelse |
-		{fifth} while lparen boolean rparen lcurly stmtseq rcurly |
+	stmt = {third} [first]:id commaids colon type optarray semicolon |
+		{fourth} if lparen boolid rparen then [first]:lcurly [second]:stmtseq [third]:rcurly optelse |
+		{fifth} while lparen boolid rparen lcurly stmtseq rcurly |
 		{sixth} for lparen opttype id [first]:colon [second]:equal [third]:expr [fourth]:semicolon boolean [fifth]:semicolon bigora rparen lcurly stmtseq rcurly |
-		{seventh} id optbracknum colon equal get lparen rparen semicolon |
-		{eigth} put lparen id optbracknum rparen semicolon |
-		{ninth} [first]:id optbracknum bigorb |
+		{seventh} id optarray colon equal get lparen rparen semicolon |
+		{eigth} put lparen id optarray rparen semicolon |
+		{ninth} [first]:id optarray bigorb |
 		{tenth} id lparen varlisttwo rparen semicolon |
-		{eleventh} [first]:id optbracknum dot [second]:id lparen varlisttwo rparen dotidthings semicolon |
+		{eleventh} [first]:id optarray dot [second]:id lparen varlisttwo rparen methodchains semicolon |
 		{twelfth} return expr semicolon |
 		{thirteenth} switch [lparen1]:lparen expr [rparen1]:rparen lcurly case [lparen2]:lparen [first]:int [rparen2]:rparen [colon1]:colon [stmtseq1]:stmtseq breakornah cases default [colon2]:colon [stmtseq2]:stmtseq rcurly ;
 	
@@ -117,10 +117,11 @@ Productions
 	breakornah = {first} break semicolon |
 		{empty} ;
 	
-	dotidthings = {first} dotidthings dotidthing |
+	methodchains = {first} methodchains methodchain |
 		{empty} ;
 		
-	dotidthing = dot id lparen varlisttwo rparen;
+	methodchain = dot id lparen varlisttwo rparen methodchain |
+		{empty} ;
 	
 	bigora = {first} id [first]:plus [second]:plus |
 		{second} id [first]:minus [second]:minus |
@@ -141,7 +142,7 @@ Productions
 	opttype = {first} type |
 		{empty} ;
 		
-	optbracknum = {first} lbrack int rbrack |
+	optarray = {array} lbrack int rbrack |
 		{empty} ;
 		
 	optelse = {first} else lcurly stmtseq rcurly |
@@ -149,13 +150,13 @@ Productions
 	
 	varlist = varlistornah ;
 	
-	varlistornah = {first} id colon type optbracknum bigcommaids |
+	varlistornah = {first} id colon type optarray bigcommaids |
 		{empty} ;
 		
 	bigcommaids = {first} bigcommaid bigcommaids |
 		{empty} ;
 		
-	bigcommaid = comma id colon type optbracknum ;
+	bigcommaid = comma id colon type optarray ;
 	
 	varlisttwo = varlisttwoornah ;
 	
@@ -170,46 +171,49 @@ Productions
 	expr = {first} expr addop term |
 		{second} term ;
 		
-	term = {first} term multop factor |
-		{second} factor ;
+	term = {mult} term multop factor |
+		{factor} factor ;
 		
-	factor = {first} lparen expr rparen |
-		{second} minus factor |
-		{third} int |
-		{fourth} real |
-		{fifth} boolean |
+	factor = {exp} lparen expr rparen |
+		{minus} minus factor |
+		{int} int |
+		{real} real |
+		{boolean} boolean |
 		{sixth} [first]:id bigore ;
 		
-	bigore = {first} optbracknum optdotidthing |
+	bigore = {first} optarray optmethodchain |
 		{second} lparen varlisttwo rparen ;
 	
-	optdotidthing = {first} dotidthing |
+	optmethodchain = {first} methodchain |
 		{empty} ;
 	
 	string = stringtok;
 	
-	boolean = {first} true | {fourth}false |
-		{second} [first]:expr cond [second]:expr ;
+	boolean = {true} true | {false}false |
+		{expCondExp} [first]:expr cond [second]:expr ;
 
 	cond = {first} equivalent |
 		{second} notequivalent |
 		{third} geq | {fourth} leq |
-		{fifth} greater | {sixth} less;
+		{fifth} greater | {sixth} less ;
 
-	addop = {first} add | {second} subtract;
-	multop = {first} times | {second} divide;
+	addop = {add} add | {subtract} subtract ;
+	multop = {times} times | {divide} divide ;
 
-	type = {first} int | 
-		{second} realp |
-		{third} string |
-		{fourth} boolean |
-		{fifth} void | 
-		{sixth} id;
-			
-	id = idtok;
-	int = digittok;
-	realp = real;
-	anycharsprod = anychars;
-	letter = letter;
-	digit = digsing;
-	voidprod = void;
+	type = {int} int | 
+		{realp} realp |
+		{string} string |
+		{boolean} boolean |
+		{void} void | 
+		{id} id ;
+	
+	boolid = {boolean} boolean |
+		{id} id ; 
+	
+	id = {idtok} idtok ;
+	int = {digittok} digittok ; 
+	realp = {real} real ;
+	anycharsprod = {anychars}anychars ;
+	letter ={letter} letter ;
+	digit = {digsing}digsing ;
+	voidprod = {void}void ;
