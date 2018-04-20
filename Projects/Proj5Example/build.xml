@@ -14,7 +14,7 @@
         <mkdir dir="build/classes"/>
 
         <java jar="src/sablecc.jar" fork="true">
-            <arg line="src/ProjFive.js -d src" />
+            <arg line="src/Project5.js -d src" />
         </java>
 
         <copy todir="build/classes/Project5/lexer" file="src/Project5/lexer/lexer.dat" />
