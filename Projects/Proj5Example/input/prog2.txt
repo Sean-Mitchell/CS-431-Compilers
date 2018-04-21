@@ -1,1 +1,9 @@
-328947 328947 234897 234897 238946 23794 6237846 32786
+BEGIN
+	CLASS richard {
+		VOID MAIN(){
+			temp : INT;
+			temp := 12;
+			PUT(temp);
+		}
+	}
+END
