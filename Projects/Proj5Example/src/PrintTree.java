@@ -55,7 +55,16 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
+		TId id = node.getId();
 		
+		// If Id is already declared in this scope stop
+		if (scopeList.element().contains(id)) {
+			System.out.println("ERROR: " + id + " is already declared in this scope.");
+		}
+		
+		// Probably have to go into type object, but also might need a bigger
+		// object so that value can be stored later.
+		scopeList.element().put(id, node.getType());
 	}
 	
 	public void caseAMethodStmtsMethodstmtseqs(AMethodStmtsMethodstmtseqs node) {
