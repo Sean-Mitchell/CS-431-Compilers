@@ -9,13 +9,14 @@ class PrintTree extends DepthFirstAdapter
 {
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
+		//caseAProg
 	}
 	
 	public void caseAProg(AProg node) {
 		
 	}
 	
-	public void caseAClasStmtsClassmethodstmts(AClasStmtsClassmethodstmts node) {
+	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
 		
 	}
 	

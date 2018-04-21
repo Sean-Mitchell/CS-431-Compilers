@@ -18,6 +18,7 @@
         </java>
 
         <copy todir="build/classes/Project5/lexer" file="src/Project5/lexer/lexer.dat" />
+        <copy todir="build/classes/Project5/parser" file="src/Project5/parser/parser.dat" />
 
         <javac srcdir="src" destdir="build/classes" includeantruntime="false"/>
     </target>
