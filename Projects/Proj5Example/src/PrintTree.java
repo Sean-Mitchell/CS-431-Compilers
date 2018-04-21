@@ -7,8 +7,13 @@ import java.util.*;
 
 class PrintTree extends DepthFirstAdapter
 {
+	static 
+	
+	LinkedList<Hashtable<Object, Object>> scopeList = new LinkedList<>();
+	
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
+		scopeList.addFirst(new Hashtable<>());
 	}
 	
 	public void caseAProg(AProg node) {
@@ -28,9 +33,21 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAClassDefClassmethodstmt(AClassDefClassmethodstmt node) {
-		System.out.println("AYYY LMAO3");
-		System.out.println(node.getId());
+		System.out.println("Hi");
+		TId id = node.getId();
 		
+		// If Id is already declared in this scope stop
+		if (scopeList.element().contains(id)) {
+			System.out.println("ERROR: " + id + " is already declared in this scope.");
+		}
+		
+		Hashtable<Object, Object> newScope = new Hashtable<>();
+		
+		scopeList.element().put(id, newScope);
+		
+		// Switch to new scope. I still don't know how to tell when to
+		// get out of this scope.
+		scopeList.addFirst(newScope);
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
