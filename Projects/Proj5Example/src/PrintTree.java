@@ -4,12 +4,9 @@ import Project5.analysis.*;
 import Project5.node.*;
 import java.util.*;
 
-
 class PrintTree extends DepthFirstAdapter
 {
-	static 
-	
-	LinkedList<Hashtable<Object, Object>> scopeList = new LinkedList<>();
+	static LinkedList<Hashtable<Object, Object>> scopeList = new LinkedList<>();
 	
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
@@ -17,37 +14,41 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAProg(AProg node) {
-		System.out.println("AProg node boi");
         node.getClassmethodstmts().apply(this);
-		
 	}
 	
 	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
-		System.out.println("AYYY LMAO");
-		
+		node.getClassmethodstmts().apply(this);
+		node.getClassmethodstmt().apply(this);
 	}
 	
 	public void caseAEpsilonClassmethodstmts(AEpsilonClassmethodstmts node) {
-		System.out.println("AYYY LMAO2");
 		
 	}
 	
 	public void caseAClassDefClassmethodstmt(AClassDefClassmethodstmt node) {
-		System.out.println("Hi");
 		TId id = node.getId();
 		
 		// If Id is already declared in this scope stop
-		if (scopeList.element().contains(id)) {
+		if (scopeList.peek().contains(id)) {
 			System.out.println("ERROR: " + id + " is already declared in this scope.");
+			java.lang.System.exit(0);
 		}
 		
 		Hashtable<Object, Object> newScope = new Hashtable<>();
 		
-		scopeList.element().put(id, newScope);
+		ExtendedNode extNode = new ExtendedNode(ExtendedNode.CLASS, node, newScope);
 		
-		// Switch to new scope. I still don't know how to tell when to
-		// get out of this scope.
+		// Put this into the symbol table
+		scopeList.peek().put(id, extNode);
+		
+		// Switch to new scope
 		scopeList.addFirst(newScope);
+		
+		node.getMethodstmtseqs().apply(this);
+		
+		// Switch out of new scope
+		scopeList.poll();
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
@@ -58,13 +59,15 @@ class PrintTree extends DepthFirstAdapter
 		TId id = node.getId();
 		
 		// If Id is already declared in this scope stop
-		if (scopeList.element().contains(id)) {
+		if (scopeList.peek().contains(id)) {
 			System.out.println("ERROR: " + id + " is already declared in this scope.");
+			java.lang.System.exit(0);
 		}
 		
-		// Probably have to go into type object, but also might need a bigger
-		// object so that value can be stored later.
-		scopeList.element().put(id, node.getType());
+		ExtendedNode extNode = new ExtendedNode(ExtendedNode.VAR, node);
+		
+		// For now just saying a var is a var, not int or whatever
+		scopeList.peek().put(id, extNode);
 	}
 	
 	public void caseAMethodStmtsMethodstmtseqs(AMethodStmtsMethodstmtseqs node) {
