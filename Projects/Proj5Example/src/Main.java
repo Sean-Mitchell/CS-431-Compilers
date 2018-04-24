@@ -14,11 +14,8 @@ public class Main{
 
             Parser parser = new Parser(lexer);
 
-			System.out.println("x");
             Start ast = parser.parse();
-			System.out.println("y");
             ast.apply(new PrintTree());  //this is what gets the depth first search going
-			System.out.println("z");
       }
       catch(Exception e){ System.out.println("Error: " + e.getMessage()); }
    }

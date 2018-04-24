@@ -1,0 +1,104 @@
+package Project5;
+
+import java.util.*;
+
+class ExtendedNode
+{
+	// type constants
+	public static final int CLASS = 0;
+	public static final int VAR = 1;
+	public static final int METHOD = 2;
+	
+	// return type constants
+	public static final int INT = 0;
+	public static final int REAL = 1;
+	public static final int STRING = 2;
+	public static final int BOOLEAN = 3;
+	public static final int VOID = 4;
+	
+	public int type;
+	public int returnType;
+	Hashtable<Object, Object> innerScope;
+	public int intVal = null;
+	public double realVal = null;
+	public String stringVal = null;
+	public boolean boolVal = null;
+	
+	public ExtendedNode(int type, int returnType) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = null;
+	}
+	
+	public ExtendedNode(int type, int returnType, int val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = null;
+		intVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, double val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = null;
+		realVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, String val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = null;
+		stringVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, boolean val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = null;
+		boolVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, Hashtable<Object, Object> innerScope) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = innerScope;
+	}
+	
+	public ExtendedNode(int type, int returnType, Hashtable<Object, Object> innerScope, int val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = innerScope;
+		intVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, Hashtable<Object, Object> innerScope, double val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = innerScope;
+		realVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, Hashtable<Object, Object> innerScope, String val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = innerScope;
+		stringVal = val;
+	}
+	
+	public ExtendedNode(int type, int returnType, Hashtable<Object, Object> innerScope, boolean val) {
+		this.type = type;
+		this.returnType = returnType;
+		this.node = node;
+		this.innerScope = innerScope;
+		boolVal = val;
+	}
+}
