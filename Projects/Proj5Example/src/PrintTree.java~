@@ -26,6 +26,7 @@ class PrintTree extends DepthFirstAdapter
 	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
 		node.getClassmethodstmts().apply(this);
 		node.getClassmethodstmt().apply(this);
+		System.out.println("here");
 	}
 	
 	public void caseAEpsilonClassmethodstmts(AEpsilonClassmethodstmts node) {
