@@ -6,8 +6,17 @@ import java.util.*;
 
 class PrintTree extends DepthFirstAdapter
 {	
+	SymbolTable symbolTable;
+	Stack<Variable> varStack;
+	Method currentMethod;
+	boolean inGlobalScope;
+
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
+		symbolTable = new SymbolTable();
+		varStack = new Stack<>();
+		currentMethod = null;
+		inGlobalScope = true;
 	}
 	
 	public void caseAProg(AProg node) {
@@ -24,11 +33,24 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAClassDefClassmethodstmt(AClassDefClassmethodstmt node) {
-		
+		node.getMethodstmtseqs().apply(this);
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
+		Method m = new Method(node.getId().toString(), node.getType().toString());
 		
+		node.getVarlist().apply(this);
+		
+		while (!varStack.empty()) {
+			m.addParam(varStack.pop());
+		}
+		
+		currentMethod = m;
+		inGlobalScope = false;
+		
+		node.getStmtseq().apply(this);
+		
+		inGlobalScope = true;
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {

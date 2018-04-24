@@ -2,7 +2,7 @@ package Project5;
 
 import java.util.*;
 
-public class Variable
+class Variable
 {
 	private String name;
 	private String type;
@@ -21,7 +21,7 @@ public class Variable
 	}
 }
 
-public class Method
+class Method
 {
 	private String name;
 	private String returnType;
@@ -40,7 +40,7 @@ public class Method
 	}
 	
 	public String getType() {
-		return type;
+		return returnType;
 	}
 	
 	public void addParam(Variable v) {
@@ -84,7 +84,7 @@ public class Method
 	}
 }
 
-public class SymbolTable
+class SymbolTable
 {
 	private Hashtable<String, Method> methods;
 	private Hashtable<String, Variable> globalVariables;
