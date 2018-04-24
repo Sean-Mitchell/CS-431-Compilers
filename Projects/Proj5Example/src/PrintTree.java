@@ -5,12 +5,9 @@ import Project5.node.*;
 import java.util.*;
 
 class PrintTree extends DepthFirstAdapter
-{
-	static LinkedList<Hashtable<Object, Object>> scopeList = new LinkedList<>();
-	
+{	
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
-		scopeList.addFirst(new Hashtable<>());
 	}
 	
 	public void caseAProg(AProg node) {
@@ -27,91 +24,15 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAClassDefClassmethodstmt(AClassDefClassmethodstmt node) {
-		TId id = node.getId();
 		
-		// If Id is already declared in this scope stop
-		if (scopeList.peek().contains(id)) {
-			System.out.println("ERROR: " + id + " is already declared in this scope.");
-			java.lang.System.exit(0);
-		}
-		
-		Hashtable<Object, Object> newScope = new Hashtable<>();
-		
-		ExtendedNode extNode = new ExtendedNode(ExtendedNode.CLASS, ExtendedNode.VOID, newScope);
-		
-		// Put this into the symbol table
-		scopeList.peek().put(id, extNode);
-		
-		// Switch to new scope
-		scopeList.addFirst(newScope);
-		
-		node.getMethodstmtseqs().apply(this);
-		
-		// Switch out of new scope
-		scopeList.poll();
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
-		TId id = node.getId();
 		
-		// If Id is already declared in this scope stop
-		if (scopeList.peek().contains(id)) {
-			System.out.println("ERROR: " + id + " is already declared in this scope.");
-			java.lang.System.exit(0);
-		}
-		
-		PType type = node.getType();
-		int typeNum = -1;
-		
-		switch (type.toString()) {
-			case "INT": typeNum = ExtendedNode.INT; break;
-			case "REAL": typeNum = ExtendedNode.REAL; break;
-			case "STRING": typeNum = ExtendedNode.STRING; break;
-			case "BOOLEAN": typeNum = ExtendedNode.BOOLEAN; break;
-			case "VOID": typeNum = ExtendedNode.VOID; break;
-		}
-		
-		node.getVarlist().apply(this);
-		
-		Hashtable<Object, Object> newScope = new Hashtable<>();
-		
-		ExtendedNode extNode = new ExtendedNode(ExtendedNode.METHOD, typeNum, newScope);
-		
-		// Put this into the symbol table
-		scopeList.peek().put(id, extNode);
-		
-		// Switch to new scope
-		scopeList.addFirst(newScope);
-		
-		node.getStmtseq().apply(this);
-		
-		// Switch out of new scope
-		scopeList.poll();
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
-		TId id = node.getId();
 		
-		// If Id is already declared in this scope stop
-		if (scopeList.peek().contains(id)) {
-			System.out.println("ERROR: " + id + " is already declared in this scope.");
-			java.lang.System.exit(0);
-		}
-		
-		PType type = node.getType();
-		int typeNum = -1;
-		
-		switch (type.toString()) {
-			case "INT": typeNum = ExtendedNode.INT; break;
-			case "REAL": typeNum = ExtendedNode.REAL; break;
-			case "STRING": typeNum = ExtendedNode.STRING; break;
-			case "BOOLEAN": typeNum = ExtendedNode.BOOLEAN; break;
-			case "VOID": typeNum = ExtendedNode.VOID; break;
-		}
-		
-		ExtendedNode extNode = new ExtendedNode(ExtendedNode.VAR, typeNum);
-		
-		scopeList.peek().put(id, extNode);
 	}
 	
 	public void caseAMethodStmtsMethodstmtseqs(AMethodStmtsMethodstmtseqs node) {
@@ -124,81 +45,15 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodDeclMethodstmtseq(AMethodDeclMethodstmtseq node) {
-		TId id = node.getId();
 		
-		// If Id is already declared in this scope stop
-		if (scopeList.peek().contains(id)) {
-			System.out.println("ERROR: " + id + " is already declared in this scope.");
-			java.lang.System.exit(0);
-		}
-		
-		PType type = node.getType();
-		int typeNum = -1;
-		
-		switch (type.toString()) {
-			case "INT": typeNum = ExtendedNode.INT; break;
-			case "REAL": typeNum = ExtendedNode.REAL; break;
-			case "STRING": typeNum = ExtendedNode.STRING; break;
-			case "BOOLEAN": typeNum = ExtendedNode.BOOLEAN; break;
-			case "VOID": typeNum = ExtendedNode.VOID; break;
-		}
-		
-		node.getVarlist().apply(this);
-		
-		Hashtable<Object, Object> newScope = new Hashtable<>();
-		
-		ExtendedNode extNode = new ExtendedNode(ExtendedNode.METHOD, typeNum, newScope);
-		
-		// Put this into the symbol table
-		scopeList.peek().put(id, extNode);
-		
-		// Switch to new scope
-		scopeList.addFirst(newScope);
-		
-		node.getStmtseq().apply(this);
-		
-		// Switch out of new scope
-		scopeList.poll();
 	}
 	
 	public void caseAVarDeclMethodstmtseq(AVarDeclMethodstmtseq node) {
-		TId id = node.getId();
 		
-		// If Id is already declared in this scope stop
-		if (scopeList.peek().contains(id)) {
-			System.out.println("ERROR: " + id + " is already declared in this scope.");
-			java.lang.System.exit(0);
-		}
-		
-		PType type = node.getType();
-		int typeNum = -1;
-		
-		switch (type.toString()) {
-			case "INT": typeNum = ExtendedNode.INT; break;
-			case "REAL": typeNum = ExtendedNode.REAL; break;
-			case "STRING": typeNum = ExtendedNode.STRING; break;
-			case "BOOLEAN": typeNum = ExtendedNode.BOOLEAN; break;
-			case "VOID": typeNum = ExtendedNode.VOID; break;
-		}
-		
-		ExtendedNode extNode = new ExtendedNode(ExtendedNode.VAR, typeNum);
-		
-		scopeList.peek().put(id, extNode);
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
-		TId id = node.getId();
-		boolean tableEntryFound = false;
-
-		for(int i = 0; i < scopeList.size(); i++) {
-			if(scopeList.get(i).contains(id)) {
-				tableEntryFound = true;
-			}
-		}
 		
-		if(!tableEntryFound) {
-			System.out.println("ERROR: " + id + " has not been declared.");
-		}
 	}
 	
 	public void caseAAssignStringMethodstmtseq(AAssignStringMethodstmtseq node) {
