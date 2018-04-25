@@ -113,7 +113,7 @@ class SymbolTable
 	
 	public boolean addVar (Variable v) {
 		if (!globalVariables.contains(v.getName())) {
-			globalVariables.put(v.getName(), v);
+			System.out.println("mkay " + globalVariables.put(v.getName(), v));
 			return true;
 		}
 		
