@@ -62,7 +62,7 @@ class Method
 	}
 	
 	public boolean containsVar(String id) {
-		return localVariables.contains(id);
+		return localVariables.containsKey(id);
 	}
 	
 	public ArrayList<Variable> getParams() {
@@ -104,7 +104,7 @@ class SymbolTable
 	}
 	
 	public boolean containsMethod(String id) {
-		return methods.contains(id);
+		return methods.containsKey(id);
 	}
 	
 	public Method getMethod(String id) {
@@ -113,7 +113,7 @@ class SymbolTable
 	
 	public boolean addVar (Variable v) {
 		if (!globalVariables.contains(v.getName())) {
-			System.out.println("mkay " + globalVariables.put(v.getName(), v));
+			globalVariables.put(v.getName(), v)
 			return true;
 		}
 		
@@ -121,7 +121,7 @@ class SymbolTable
 	}
 	
 	public boolean containsVar(String id) {
-		return globalVariables.contains(id);
+		return globalVariables.containsKey(id);
 	}
 	
 	public Variable getVar(String id) {
