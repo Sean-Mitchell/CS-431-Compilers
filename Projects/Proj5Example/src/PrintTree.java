@@ -40,7 +40,7 @@ class PrintTree extends DepthFirstAdapter
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
 		if(symbolTable.containsMethod(node.getId().toString())) {
-			System.out.println("ERROR: Method " + node.getId().toString() + " has already been declared.");
+			System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 			errorFound = true;
 		}
 		
@@ -67,20 +67,17 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
-		System.out.println("here:" + symbolTable.containsVar(node.getId().toString()) + ":" + node.getId().toString());
 		if(inGlobalScope) {
 			if (symbolTable.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			
-			System.out.println(node.getId() + ":" + node.getType());
 			// Doesn't yet handle more_ids
-			boolean a = symbolTable.addVar(new Variable(node.getId().toString(), node.getType().toString()));
-			System.out.println("hmm " + a);
+			symbolTable.addVar(new Variable(node.getId().toString(), node.getType().toString()));
 		} else {
 			if (currentMethod.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getId().toString(), node.getType().toString()));
@@ -98,7 +95,7 @@ class PrintTree extends DepthFirstAdapter
 	
 	public void caseAMethodDeclMethodstmtseq(AMethodDeclMethodstmtseq node) {
 		if(symbolTable.containsMethod(node.getId().toString())) {
-			System.out.println("ERROR: Method " + node.getId().toString() + " has already been declared.");
+			System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 			errorFound = true;
 		}
 		
@@ -127,14 +124,14 @@ class PrintTree extends DepthFirstAdapter
 	public void caseAVarDeclMethodstmtseq(AVarDeclMethodstmtseq node) {
 		if(inGlobalScope) {
 			if (symbolTable.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			// Doesn't yet handle more_ids
 			symbolTable.addVar(new Variable(node.getId().toString(), node.getType().toString()));
 		} else {
 			if (currentMethod.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getId().toString(), node.getType().toString()));
@@ -142,6 +139,13 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
+		if(inGlobalScope) {
+			if(!symbolTable.containsVar(node.getId().toString())) {
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has not been declared.");
+				errorFound = true;
+			}
+		}
+		
 		node.getExpr().apply(this);
 	}
 	
@@ -168,13 +172,13 @@ class PrintTree extends DepthFirstAdapter
 	public void caseADeclObjectMethodstmtseq(ADeclObjectMethodstmtseq node) {
 		if(inGlobalScope) {
 			if (symbolTable.containsVar(node.getLeftSide().toString())) {
-				System.out.println("ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			symbolTable.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else {
 			if (currentMethod.containsVar(node.getLeftSide().toString())) {
-				System.out.println("ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
@@ -205,14 +209,14 @@ class PrintTree extends DepthFirstAdapter
 	public void caseAVarDeclStmt(AVarDeclStmt node) {
 		if(inGlobalScope) {
 			if (symbolTable.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			// Doesn't yet handle more_ids
 			symbolTable.addVar(new Variable(node.getId().toString(), node.getType().toString()));
 		} else {
 			if (currentMethod.containsVar(node.getId().toString())) {
-				System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getId().toString(), node.getType().toString()));
@@ -237,13 +241,13 @@ class PrintTree extends DepthFirstAdapter
 			// Need to deal with another scope
 			if(inGlobalScope) {
 				if (symbolTable.containsVar(node.getId().toString())) {
-					System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 					errorFound = true;
 				}
 				symbolTable.addVar(new Variable(node.getId().toString(), node.getForOptionalType().toString()));
 			} else {
 				if (currentMethod.containsVar(node.getId().toString())) {
-					System.out.println("ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
 					errorFound = true;
 				}
 				currentMethod.addVar(new Variable(node.getId().toString(), node.getForOptionalType().toString()));
@@ -272,13 +276,13 @@ class PrintTree extends DepthFirstAdapter
 	public void caseADeclObjectStmt(ADeclObjectStmt node) {
 		if(inGlobalScope) {
 			if (symbolTable.containsVar(node.getLeftSide().toString())) {
-				System.out.println("ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			symbolTable.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else {
 			if (currentMethod.containsVar(node.getLeftSide().toString())) {
-				System.out.println("ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
