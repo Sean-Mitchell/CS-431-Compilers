@@ -12,18 +12,29 @@ class AssemblyWriter extends DepthFirstAdapter
 	int registerCounter;
 	//% by 11 for float counters
 	int floatRegCounter;
+	
+	//StringBuilders for data and main method
+	StringBuilder mainAssembly;
+	StringBuilder dataAssembly;
 
  	public AssemblyWriter(SymbolTable symbolTable) {
 		System.out.println("Creating assembly code");
 		this.symbolTable = symbolTable;
 		varAddressOffsets = new Hashtable<>();
+		
 		registerCounter = 0;
 		floatRegCounter = 0;
 		
+		mainAssembly = new StringBuilder();
+		dataAssembly = new StringBuilder();
 		
 	}
 	
 	public void caseAProg(AProg node) {
+		//We should probably expand this and make it set up classes and methods and stuff eventually
+		//Initial Add stuff
+		mainAssembly.Append("\t.text\n").Append("\t.globl main\n").Append("main:\n");
+		dataAssembly.Append("\t.data\n");
         node.getClassmethodstmts().apply(this);
 	}
 	
@@ -41,11 +52,14 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
+		node.getVarlist().apply(this);
+		node.getStmtseq().apply(this);
 
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
-
+		node.getId().toString();
+		node.getType().toString();
 	}
 	
 	public void caseAMethodStmtsMethodstmtseqs(AMethodStmtsMethodstmtseqs node) {
@@ -58,14 +72,18 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodDeclMethodstmtseq(AMethodDeclMethodstmtseq node) {
-
+		node.getId().toString();
+		node.getType().toString();
+		node.getVarlist().apply(this);
+		node.getStmtseq().apply(this);
 	}
 	
 	public void caseAVarDeclMethodstmtseq(AVarDeclMethodstmtseq node) {
-
+		node.getId().toString();
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
+		node.getId().toString();
 		node.getExpr().apply(this);
 	}
 	
@@ -287,6 +305,17 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMultTerm(AMultTerm node) {
+		//Start the var declarations wew lad
+		//this probably isn't right but it's a start
+		if(node.getTerm().getType().toString().equals("INT")) {
+			
+		} else if(node.getTerm().getType().toString().equals("REAL")) {
+		
+		} else if(node.getTerm().getType().toString().equals("STRING")) {
+			
+		} else if(node.getTerm().getType().toString().equals("BOOLEAN")) {
+			
+		}
 		
 	}
 	
@@ -351,6 +380,17 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMinusAddop(AMinusAddop node) {
+		//Start the var declarations wew lad
+		//
+		if(node.getType().toString().equals("INT")) {
+			
+		} else if(node.getType().toString().equals("REAL")) {
+		
+		} else if(node.getType().toString().equals("STRING")) {
+			
+		} else if(node.getType().toString().equals("BOOLEAN")) {
+			
+		}
 		
 	}
 	
