@@ -8,11 +8,17 @@ class AssemblyWriter extends DepthFirstAdapter
 {	
 	SymbolTable symbolTable;
 	Hashtable<String, Integer> varAddressOffsets;
+	//% by 7 to keep track of registers used
+	int registerCounter;
+	//% by 11 for float counters
+	int floatRegCounter;
 
  	public AssemblyWriter(SymbolTable symbolTable) {
 		System.out.println("Creating assembly code");
 		this.symbolTable = symbolTable;
 		varAddressOffsets = new Hashtable<>();
+		registerCounter = 0;
+		floatRegCounter = 0;
 		
 		
 	}
@@ -355,4 +361,9 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAIdType(AIdType node) {
 		
 	}
+	
+	/*
+	 * These are the non-generated methods, will hopefully move into its own class
+	 * */
+	 */
 }

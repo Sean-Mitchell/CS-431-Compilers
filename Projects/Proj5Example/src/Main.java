@@ -13,9 +13,14 @@ public class Main{
                   (new InputStreamReader(System.in), 1024));
 
             Parser parser = new Parser(lexer);
-
+            
             Start ast = parser.parse();
-            ast.apply(new PrintTree());  //this is what gets the depth first search going
+            PrintTree printTree = new PrintTree();
+            ast.apply(printTree);  //this is what gets the depth first search going
+            
+            if (!printTree.errorFound) {
+            	//In here do the assembly traversal and write the string to a file
+            }
       }
       catch(Exception e){ System.out.println("Error: " + e.getMessage()); }
    }

@@ -10,7 +10,7 @@ class PrintTree extends DepthFirstAdapter
 	Stack<Variable> varStack;
 	Method currentMethod;
 	boolean inGlobalScope;
-	boolean errorFound;
+	public boolean errorFound;
 
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
