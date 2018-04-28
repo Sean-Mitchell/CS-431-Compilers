@@ -72,6 +72,12 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
 		
+		/*Instead of doing this node stuff,
+			Loop through all variables and add them to the stack
+			I should say do this for local variables in a method not in the class
+		
+		*/
+		
 		if (node.getType().toString().trim().equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
 			variableType = "STRING";
@@ -271,6 +277,17 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//uses global variable type to decide what type of id it is
 	public void caseAMoreIdsMoreIds(AMoreIdsMoreIds node) {
+		
+		/*
+		 * 
+		 * 
+		 * TODO: THIS IS WRONG
+		 * I am making ints, reals, and bools global when they may not be
+		 * add scope variable so that these variables are added ONLY when they are
+		 * class level variables.
+		 * 
+		 * 
+		 */
 		
 		if (variableType.equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
