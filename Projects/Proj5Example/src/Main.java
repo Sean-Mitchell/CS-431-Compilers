@@ -22,7 +22,7 @@ public class Main{
             if (!printTree.errorFound) {
             	//In here do the assembly traversal and write the string to a file
                 //start the assembly bois off
-                AssemblyWriter assembly = new AssemblyWriter(printTree.symbolTable);
+            	AssemblyWriter assembly = new AssemblyWriter(printTree.symbolTable);
                 ast.apply(assembly);
             } else {
             	System.out.println("Parsing Issues.");

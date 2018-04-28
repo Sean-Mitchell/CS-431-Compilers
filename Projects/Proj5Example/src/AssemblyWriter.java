@@ -41,9 +41,10 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAProg(AProg node) {
 		//We should probably expand this and make it set up classes and methods and stuff eventually
 		//Initial Add stuff
-		mainAssembly.Append("\t.text\n").Append("\t.globl main\n").Append("main:\n");
-		dataAssembly.Append("\t.data\n");
+		mainAssembly.append("\t.text\n").append("\t.globl main\n").append("main:\n");
+		dataAssembly.append("\t.data\n");
         node.getClassmethodstmts().apply(this);
+		System.out.println("main\n" + mainAssembly.toString() + "\n" + "data\n" + dataAssembly.toString() );
 	}
 	
 	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
@@ -66,17 +67,21 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
-		if (node.getType().toString().equals("STRING")) {
-			dataAssembly.append(node.getId().toString() + ":\t.asciiz\n");
+		System.out.println(node.getId().toString());
+		System.out.println(node.getType().toString());
+		System.out.println("STRING: " + node.getType().toString().trim().equals("STRING"));
+		
+		if (node.getType().toString().trim().equals("STRING")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
 			
-		} else if (node.getType().toString().equals("INT")) {
-			dataAssembly.append(node.getId().toString() + ":\t .word\t 0\n");
+		} else if (node.getType().toString().trim().equals("INT")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
 			
-		} else if (node.getType().toString().equals("REAL")) {
-			dataAssembly.append(node.getId().toString() + ":\t .float\t 0.0\n");
+		} else if (node.getType().toString().trim().equals("REAL")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t .float\t 0.0\n");
 			
 		} else { //Boolean Boi
-			dataAssembly.append(node.getId().toString() + ":\t .word\t 0\n");
+			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
 			
 		}
 		node.getId().toString();
@@ -328,6 +333,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAMultTerm(AMultTerm node) {
 		//Start the var declarations wew lad
 		//this probably isn't right but it's a start
+		/*
 		if(node.getTerm().getType().toString().equals("INT")) {
 			
 		} else if(node.getTerm().getType().toString().equals("REAL")) {
@@ -337,7 +343,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		} else if(node.getTerm().getType().toString().equals("BOOLEAN")) {
 			
 		}
-		
+		*/
 	}
 	
 	public void caseAFactorTerm(AFactorTerm node) {
@@ -403,6 +409,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAMinusAddop(AMinusAddop node) {
 		//Start the var declarations wew lad
 		//
+		/*
 		if(node.getType().toString().equals("INT")) {
 			
 		} else if(node.getType().toString().equals("REAL")) {
@@ -412,6 +419,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		} else if(node.getType().toString().equals("BOOLEAN")) {
 			
 		}
+		*/
 		
 	}
 	
@@ -426,5 +434,4 @@ class AssemblyWriter extends DepthFirstAdapter
 	/*
 	 * These are the non-generated methods, will hopefully move into its own class
 	 * */
-	 */
 }
