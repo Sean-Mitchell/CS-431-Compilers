@@ -1,7 +1,7 @@
 BEGIN
 
 	temp : INT;
-	hullo : STRING;
+	hullo , next , cool : STRING;
 	CLASS richard {
 		VOID MAIN(){
 			temp : INT;

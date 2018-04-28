@@ -18,6 +18,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	int whileCount;
 	int caseCount;
 	
+	String variableType;
+	
 	//StringBuilders for data and main method
 	StringBuilder mainAssembly;
 	StringBuilder dataAssembly;
@@ -32,6 +34,8 @@ class AssemblyWriter extends DepthFirstAdapter
 		ifCount = 0;
 		whileCount = 0;
 		caseCount = 0;
+		
+		variableType = "";
 		
 		mainAssembly = new StringBuilder();
 		dataAssembly = new StringBuilder();
@@ -67,25 +71,24 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
-		System.out.println(node.getId().toString());
-		System.out.println(node.getType().toString());
-		System.out.println("STRING: " + node.getType().toString().trim().equals("STRING"));
 		
 		if (node.getType().toString().trim().equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
+			variableType = "STRING";
 			
 		} else if (node.getType().toString().trim().equals("INT")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
+			variableType = "INT";
 			
 		} else if (node.getType().toString().trim().equals("REAL")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .float\t 0.0\n");
+			variableType = "REAL";
 			
 		} else { //Boolean Boi
 			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
-			
+			variableType = "BOOLEAN";
 		}
-		node.getId().toString();
-		node.getType().toString();
+		node.getMoreIds().apply(this);
 	}
 	
 	public void caseAMethodStmtsMethodstmtseqs(AMethodStmtsMethodstmtseqs node) {
@@ -268,10 +271,27 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAMoreIdsMoreIds(AMoreIdsMoreIds node) {
 		
+		if (variableType.equals("STRING")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
+			variableType = "STRING";
+			
+		} else if (variableType.equals("INT")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
+			variableType = "INT";
+			
+		} else if (variableType.equals("REAL")) {
+			dataAssembly.append(node.getId().toString().trim() + ":\t .float\t 0.0\n");
+			variableType = "REAL";
+			
+		} else { //Boolean Boi
+			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
+			variableType = "BOOLEAN";
+		}
+		node.getMoreIds().apply(this);
 	}
 	
 	public void caseAEpsilonMoreIds(AEpsilonMoreIds node) {
-		
+		variableType = "";
 	}
 	
 	public void caseAMoreIdsVarlist(AMoreIdsVarlist node) {
