@@ -269,27 +269,25 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 	}
 	
+	//uses global variable type to decide what type of id it is
 	public void caseAMoreIdsMoreIds(AMoreIdsMoreIds node) {
 		
 		if (variableType.equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
-			variableType = "STRING";
 			
 		} else if (variableType.equals("INT")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
-			variableType = "INT";
 			
 		} else if (variableType.equals("REAL")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .float\t 0.0\n");
-			variableType = "REAL";
 			
 		} else { //Boolean Boi
 			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
-			variableType = "BOOLEAN";
 		}
 		node.getMoreIds().apply(this);
 	}
 	
+	//Resets what type of variable is being created
 	public void caseAEpsilonMoreIds(AEpsilonMoreIds node) {
 		variableType = "";
 	}
