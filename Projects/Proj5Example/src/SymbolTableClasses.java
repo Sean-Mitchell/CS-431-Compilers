@@ -48,12 +48,12 @@ class Method
 	}
 	
 	public void addVar(Variable v) {
-		localVariables.put(v.getName(), v);
+		localVariables.put(v.getName().trim(), v);
 	}
 	
 	public boolean containsParam(String id) {
 		for(int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getName().equals(id)) {
+			if(parameters.get(i).getName().equals(id.trim())) {
 				return true;
 			}
 		}
@@ -62,7 +62,7 @@ class Method
 	}
 	
 	public boolean containsVar(String id) {
-		return localVariables.containsKey(id);
+		return localVariables.containsKey(id.trim());
 	}
 	
 	public ArrayList<Variable> getParams() {
@@ -71,7 +71,7 @@ class Method
 	
 	public Variable getParam(String id) {
 		for(int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getName().equals(id)) {
+			if(parameters.get(i).getName().equals(id.trim())) {
 				return parameters.get(i);
 			}
 		}
@@ -80,7 +80,7 @@ class Method
 	}
 	
 	public Variable getVar(String id) {
-		return localVariables.get(id);
+		return localVariables.get(id.trim());
 	}
 }
 
@@ -95,8 +95,8 @@ class SymbolTable
 	}
 	
 	public boolean addMethod(Method m) {
-		if (!methods.contains(m.getName())) {
-			methods.put(m.getName(), m);
+		if (!methods.contains(m.getName().trim())) {
+			methods.put(m.getName().trim(), m);
 			return true;
 		}
 		
@@ -104,16 +104,16 @@ class SymbolTable
 	}
 	
 	public boolean containsMethod(String id) {
-		return methods.containsKey(id);
+		return methods.containsKey(id.trim());
 	}
 	
 	public Method getMethod(String id) {
-		return methods.get(id);
+		return methods.get(id.trim());
 	}
 	
 	public boolean addVar (Variable v) {
-		if (!globalVariables.contains(v.getName())) {
-			globalVariables.put(v.getName(), v);
+		if (!globalVariables.contains(v.getName().trim())) {
+			globalVariables.put(v.getName().trim(), v);
 			return true;
 		}
 		
@@ -121,10 +121,10 @@ class SymbolTable
 	}
 	
 	public boolean containsVar(String id) {
-		return globalVariables.containsKey(id);
+		return globalVariables.containsKey(id.trim());
 	}
 	
 	public Variable getVar(String id) {
-		return globalVariables.get(id);
+		return globalVariables.get(id.trim());
 	}
 }

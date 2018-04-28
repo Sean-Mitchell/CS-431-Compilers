@@ -4,6 +4,7 @@ import Project5.analysis.*;
 import Project5.node.*;
 import java.util.*;
 
+
 class AssemblyWriter extends DepthFirstAdapter
 {	
 	SymbolTable symbolTable;
@@ -18,7 +19,14 @@ class AssemblyWriter extends DepthFirstAdapter
 	int whileCount;
 	int caseCount;
 	
+	//Used for MoreIds
 	String variableType;
+	
+	//Stack that holds variables and whatnot including values?
+	Stack<Symbol> varStack = new Stack<Symbol>();
+	
+	//String based stack that holds the current scope so that we know where to look in the symbol table
+	Stack<String> currentScope = new Stack<String>();
 	
 	//StringBuilders for data and main method
 	StringBuilder mainAssembly;
@@ -45,10 +53,10 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAProg(AProg node) {
 		//We should probably expand this and make it set up classes and methods and stuff eventually
 		//Initial Add stuff
-		mainAssembly.append("\t.text\n").append("\t.globl main\n").append("main:\n");
+		mainAssembly.append("\t.text\n").append("\t.global main\n").append("main:\n");
 		dataAssembly.append("\t.data\n");
         node.getClassmethodstmts().apply(this);
-		System.out.println("main\n" + mainAssembly.toString() + "\n" + "data\n" + dataAssembly.toString() );
+		System.out.println("main\n" + mainAssembly.toString() + "\n" + dataAssembly.toString() );
 	}
 	
 	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
@@ -161,6 +169,17 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAAssignExprStmt(AAssignExprStmt node) {
 		
+		//Currently assume that this is a global scope 
+		//TODO: update with scopeStack thingy
+		System.out.println("HIT ME");
+		Variable tempVariable = symbolTable.getVar(node.getId().toString());
+		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType(), getNextIntRegister());
+		varStack.push(variableSymbol);
+		
+		
+		node.getExpr().apply(this);
+
+		
 	}
 	
 	public void caseAAssignStringStmt(AAssignStringStmt node) {
@@ -168,7 +187,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclStmt(AVarDeclStmt node) {
-
 	}
 	
 	public void caseAIfBlockStmt(AIfBlockStmt node) {
@@ -193,7 +211,30 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAPutStmt(APutStmt node) {
+		node.getId().apply(this);		
 		
+		System.out.println(varStack.peek().getRegister());
+		System.out.println(varStack.peek().getType());
+		
+		Symbol print = varStack.pop();
+		if (print.getType().equals("STRING")) {
+			mainAssembly.append("\tli  $v0, 4\n");
+			mainAssembly.append("\tla  $a0, " + print.stringVal + "\n");
+			mainAssembly.append("syscall\n");
+			
+		} else if (print.getType().equals("INT")) {
+			mainAssembly.append("\tli  $v0, 1\n");
+			mainAssembly.append("\tla  $a0, (" + print.getRegister() + ")\n");
+			mainAssembly.append("syscall\n");
+			
+		} else if (print.getType().equals("REAL")) {
+			mainAssembly.append("\tli  $v0, 2\n");
+			mainAssembly.append("\tla  $a0, (" + print.getRegister() + ")\n");
+			mainAssembly.append("syscall\n");
+			
+		} else {
+			
+		}
 	}
 	
 	public void caseAIncrStmt(AIncrStmt node) {
@@ -362,6 +403,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseATermExpr(ATermExpr node) {
+		node.getTerm().apply(this);
 		
 	}
 	
@@ -382,6 +424,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAFactorTerm(AFactorTerm node) {
+		node.getFactor().apply(this);
 		
 	}
 	
@@ -389,12 +432,18 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 	}
 	
+	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
 		
+		mainAssembly.append("\t\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
+		varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
 	}
 	
+	//li.s because it's a floating point
 	public void caseARealFactor(ARealFactor node) {
+		//I think this should be pushed on the stack, uncertain atm
 		
+		mainAssembly.append("\t\tli.s\t" + varStack.peek().getRegister() + "\t" + node.getReal().toString().trim() + "\n");		
 	}
 	
 	public void caseAArrayFactor(AArrayFactor node) {
@@ -469,4 +518,16 @@ class AssemblyWriter extends DepthFirstAdapter
 	/*
 	 * These are the non-generated methods, will hopefully move into its own class
 	 * */
+	
+	//Used to cycle through normal registers
+	private String getNextIntRegister() {
+		int registerNumber = registerCounter % 7;
+		return "$t" + registerNumber;
+	}
+
+	//Used to cycle through float registers
+	private String getNextFloatRegister() {
+		int registerNumber = floatRegCounter % 11;
+		return "$f" + registerNumber;
+	}
 }
