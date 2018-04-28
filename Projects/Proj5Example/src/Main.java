@@ -18,8 +18,14 @@ public class Main{
             PrintTree printTree = new PrintTree();
             ast.apply(printTree);  //this is what gets the depth first search going
             
+            
             if (!printTree.errorFound) {
             	//In here do the assembly traversal and write the string to a file
+                //start the assembly bois off
+                AssemblyWriter assembly = new AssemblyWriter(printTree.symbolTable);
+                ast.apply(assembly);
+            } else {
+            	System.out.println("Parsing Issues.");
             }
       }
       catch(Exception e){ System.out.println("Error: " + e.getMessage()); }

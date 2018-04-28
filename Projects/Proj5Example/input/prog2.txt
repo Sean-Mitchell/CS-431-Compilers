@@ -1,11 +1,12 @@
 BEGIN
 
 	temp : INT;
-	temp : INT;
+	//temp : INT;
+	hullo: STRING;
 	CLASS richard {
 		VOID MAIN(){
 			temp : INT;
-			temp : INT;
+			//temp : INT;
 			temp := 12;
 			PUT(temp);
 		}

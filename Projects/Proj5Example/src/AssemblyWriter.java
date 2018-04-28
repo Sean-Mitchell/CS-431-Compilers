@@ -13,6 +13,11 @@ class AssemblyWriter extends DepthFirstAdapter
 	//% by 11 for float counters
 	int floatRegCounter;
 	
+	//Assorted counters for labels
+	int ifCount;
+	int whileCount;
+	int caseCount;
+	
 	//StringBuilders for data and main method
 	StringBuilder mainAssembly;
 	StringBuilder dataAssembly;
@@ -24,6 +29,9 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		registerCounter = 0;
 		floatRegCounter = 0;
+		ifCount = 0;
+		whileCount = 0;
+		caseCount = 0;
 		
 		mainAssembly = new StringBuilder();
 		dataAssembly = new StringBuilder();
@@ -58,6 +66,19 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
+		if (node.getType().toString().equals("STRING")) {
+			dataAssembly.append(node.getId().toString() + ":\t.asciiz\n");
+			
+		} else if (node.getType().toString().equals("INT")) {
+			dataAssembly.append(node.getId().toString() + ":\t .word\t 0\n");
+			
+		} else if (node.getType().toString().equals("REAL")) {
+			dataAssembly.append(node.getId().toString() + ":\t .float\t 0.0\n");
+			
+		} else { //Boolean Boi
+			dataAssembly.append(node.getId().toString() + ":\t .word\t 0\n");
+			
+		}
 		node.getId().toString();
 		node.getType().toString();
 	}

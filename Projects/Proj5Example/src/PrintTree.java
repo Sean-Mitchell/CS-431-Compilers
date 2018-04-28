@@ -6,7 +6,7 @@ import java.util.*;
 
 class PrintTree extends DepthFirstAdapter
 {	
-	SymbolTable symbolTable;
+	public SymbolTable symbolTable;
 	Stack<Variable> varStack;
 	Method currentMethod;
 	boolean inGlobalScope;
