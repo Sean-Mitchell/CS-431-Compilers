@@ -6,6 +6,7 @@ class Variable
 {
 	private String name;
 	private String type;
+	private int spOffset;
 	
 	public Variable(String name, String type) {
 		this.name = name;
@@ -19,6 +20,14 @@ class Variable
 	public String getType() {
 		return type;
 	}
+	
+	public int getspOffset() {
+		return spOffset;
+	}
+	
+	public void setspOffset(int offset) {
+		this.spOffset = offset;
+	}
 }
 
 class Method
@@ -31,8 +40,8 @@ class Method
 	public Method(String name, String returnType) {
 		this.name = name;
 		this.returnType = returnType;
-		parameters = new ArrayList<>();
-		localVariables = new Hashtable<>();
+		parameters = new ArrayList<Variable>();
+		localVariables = new Hashtable<String, Variable>();
 	}
 	
 	public String getName() {
@@ -82,6 +91,10 @@ class Method
 	public Variable getVar(String id) {
 		return localVariables.get(id.trim());
 	}
+	
+	public Hashtable<String, Variable> getLocalVariables() {
+		return localVariables;
+	}
 }
 
 class SymbolTable
@@ -90,8 +103,8 @@ class SymbolTable
 	private Hashtable<String, Variable> globalVariables;
 	
 	public SymbolTable() {
-		methods = new Hashtable<>();
-		globalVariables = new Hashtable<>();
+		methods = new Hashtable<String, Method>();
+		globalVariables = new Hashtable<String, Variable>();
 	}
 	
 	public boolean addMethod(Method m) {

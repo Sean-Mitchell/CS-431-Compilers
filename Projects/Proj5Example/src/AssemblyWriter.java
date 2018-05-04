@@ -29,8 +29,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	Stack<String> currentScope = new Stack<String>();
 	
 	//StringBuilders for data and main method
-	StringBuilder mainAssembly;
-	StringBuilder dataAssembly;
+	public StringBuilder mainAssembly;
+	public StringBuilder dataAssembly;
 
  	public AssemblyWriter(SymbolTable symbolTable) {
 		System.out.println("Creating assembly code");
@@ -73,6 +73,44 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
+		
+		/*Instead of doing this node stuff,
+			Loop through all variables and add them to the stack
+			I should say do this for local variables in a method not in the class		
+		*/
+		
+		//Get total amount of vars != to strings
+		//loop through them and assign them offsets from the $sp
+		//Not worrying about other methods/ variables at the moment
+		Method thisMethod = symbolTable.getMethod(node.getId().toString().trim());
+		
+		//gets all the keys (variable names) in method
+		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
+		
+		//push scope onto stack
+		currentScope.push(node.getId().toString().trim());
+		
+		System.out.println("METHOD TEST");
+		
+		//variable to hold the amount that the stack pointer should be added
+		int stackPointerAdded = 0;
+		
+		for (String key : variableNames) {
+			//If the variable is not equal to string, add 4 (bytes) to stack
+			//and assign variable $sp offset
+			if (!thisMethod.getVar(key).getType().equals("STRING")) {
+				thisMethod.getVar(key).setspOffset(stackPointerAdded);
+				stackPointerAdded += 4;	
+				
+				System.out.println(thisMethod.getVar(key).getspOffset());
+			} else {
+				//Temporary, we still need to get the strings value
+				dataAssembly.append(key + ":\t.asciiz\n");
+			}
+		}
+		
+		mainAssembly.append("\taddiu $sp, $sp," + stackPointerAdded + "\n");
+			
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
 
@@ -80,11 +118,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
 		
-		/*Instead of doing this node stuff,
-			Loop through all variables and add them to the stack
-			I should say do this for local variables in a method not in the class
-		
-		*/
 		
 		if (node.getType().toString().trim().equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
@@ -115,6 +148,48 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodDeclMethodstmtseq(AMethodDeclMethodstmtseq node) {
+		/*Instead of doing this node stuff,
+		Loop through all variables and add them to the stack
+		I should say do this for local variables in a method not in the class		
+		*/
+		
+		//set $ra = $fp
+		//set $fp = $sp
+		//Get total amount of vars != to strings
+		//loop through them and assign them offsets from the $sp
+		//Not worrying about other methods/ variables at the moment
+		Method thisMethod = symbolTable.getMethod(node.getId().toString().trim());
+		
+		//gets all the keys (variable names) in method
+		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
+		
+		//push scope onto stack
+		currentScope.push(node.getId().toString().trim());
+		
+		System.out.println("METHOD TESTV2");
+		
+		//variable to hold the amount that the stack pointer should be added
+		int stackPointerAdded = 0;
+		
+		for (String key : variableNames) {
+			//If the variable is not equal to string, add 4 (bytes) to stack
+			//and assign variable $sp offset
+			if (!thisMethod.getVar(key).getType().equals("STRING")) {
+				thisMethod.getVar(key).setspOffset(stackPointerAdded);
+				stackPointerAdded += 4;	
+				
+				System.out.println(thisMethod.getVar(key).getspOffset());
+			} else {
+				//Temporary, we still need to get the strings value
+				dataAssembly.append(key + ":\t.asciiz\n");
+			}
+		}
+		
+		//Must multiply the stackPointer by -1 so the stack grows correctly
+		stackPointerAdded *= -1;
+		
+		mainAssembly.append("\taddiu $sp, $sp," + stackPointerAdded + "\n");
+	
 		node.getId().toString();
 		node.getType().toString();
 		node.getVarlist().apply(this);
@@ -171,7 +246,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//Currently assume that this is a global scope 
 		//TODO: update with scopeStack thingy
-		System.out.println("HIT ME");
 		Variable tempVariable = symbolTable.getVar(node.getId().toString());
 		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType(), getNextIntRegister());
 		varStack.push(variableSymbol);
@@ -213,8 +287,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAPutStmt(APutStmt node) {
 		node.getId().apply(this);		
 		
-		System.out.println(varStack.peek().getRegister());
-		System.out.println(varStack.peek().getType());
+		//System.out.println(varStack.peek().getRegister());
+		//System.out.println(varStack.peek().getType());
 		
 		Symbol print = varStack.pop();
 		if (print.getType().equals("STRING")) {
@@ -435,7 +509,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
 		
-		mainAssembly.append("\t\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
+		mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
 		varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
 	}
 	

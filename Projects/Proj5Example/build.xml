@@ -2,6 +2,7 @@
 	<!-- Deletes old build and old compiled project-->
     <target name="clean">
         <delete dir="build"/>
+        <delete dir="output"/>
         <delete dir="src/Project5" />
 		<delete file="src/ProgExpr.java" failonerror="false"/>
     </target>
@@ -12,6 +13,7 @@
 		compiles it all together with java-->
     <target name="compile">
         <mkdir dir="build/classes"/>
+        <mkdir dir="output"/>
 
         <java jar="src/sablecc.jar" fork="true">
             <arg line="src/Project5.js -d src" />
@@ -28,9 +30,15 @@
 		pushes the lexer to the classes directory
 		compiles it all together with java-->
     <target name="run">
-        <java classname="Project5.Main" classpath="build/classes" input="input/prog1.txt"/>
-		<java classname="Project5.Main" classpath="build/classes" input="input/prog2.txt"/>
-		<java classname="Project5.Main" classpath="build/classes" input="input/prog3.txt"/>
+        <java classname="Project5.Main" classpath="build/classes" input="input/prog1.txt">
+			<arg value="prog1.s"/>
+		</java>
+		<java classname="Project5.Main" classpath="build/classes" input="input/prog2.txt">
+			<arg value="prog2.s"/>
+		</java>
+		<java classname="Project5.Main" classpath="build/classes" input="input/prog3.txt">
+			<arg value="prog3.s"/>
+		</java>
     </target>
 	
 	

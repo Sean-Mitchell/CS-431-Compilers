@@ -5,6 +5,8 @@ BEGIN
 	CLASS richard {
 		VOID MAIN(){
 			temp : INT;
+			fdsafd: INT;
+			fdsafdd: INT;
 			temp := 12;
 			PUT(temp);
 		}
