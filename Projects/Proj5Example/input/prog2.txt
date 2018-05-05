@@ -5,8 +5,9 @@ BEGIN
 	CLASS richard {
 		VOID MAIN(){
 			temp : INT;
-			fdsafd: INT;
+			dad: INT;
 			fdsafdd: INT;
+			dad := 999;
 			temp := 12;
 			PUT(temp);
 		}

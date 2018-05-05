@@ -52,6 +52,9 @@ public class Symbol
 	 * 
 	 * 
 	 */
+	public String getStringVal() {
+		return stringVal;
+	}
 	public String getType() {
 		return type;
 	}

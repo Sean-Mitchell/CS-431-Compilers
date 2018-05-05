@@ -79,6 +79,12 @@ class AssemblyWriter extends DepthFirstAdapter
 			I should say do this for local variables in a method not in the class		
 		*/
 		
+		//Input method name into assembly code
+		//Only if it's not the main method
+		if (!node.getId().toString().trim().toUpperCase().equals("MAIN"))
+			mainAssembly.append(node.getId().toString().trim() + ":");
+		
+		
 		//Get total amount of vars != to strings
 		//loop through them and assign them offsets from the $sp
 		//Not worrying about other methods/ variables at the moment
@@ -108,6 +114,9 @@ class AssemblyWriter extends DepthFirstAdapter
 				dataAssembly.append(key + ":\t.asciiz\n");
 			}
 		}
+		
+		//Make pointer offset grow in the right direction
+		stackPointerAdded *= -1;
 		
 		mainAssembly.append("\taddiu $sp, $sp," + stackPointerAdded + "\n");
 			
@@ -246,12 +255,40 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//Currently assume that this is a global scope 
 		//TODO: update with scopeStack thingy
-		Variable tempVariable = symbolTable.getVar(node.getId().toString());
-		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType(), getNextIntRegister());
-		varStack.push(variableSymbol);
+		Variable tempVariable = new Variable("wat","no");
 		
+		//SCOPE BOIS WEW LAD		
+		//checks method scope
+		if (symbolTable.containsMethod(currentScope.peek()))
+		{
+			//if the method exists in the global table then get it
+			//if that method contains the var we're looking at then add it into the variable symbol table
+			if (symbolTable.getMethod(currentScope.peek()).containsVar(node.getId().toString().trim()))
+			{
+				System.out.println(node.getId().toString());
+				tempVariable = symbolTable.getMethod(currentScope.peek()).getVar(node.getId().toString().trim());
+			}
+			
+			//check global
+		} else {
+			tempVariable = symbolTable.getVar(node.getId().toString());
+		}
+		
+
+		System.out.println("Variable name and type");
+		System.out.println(tempVariable.getName());
+		System.out.println(tempVariable.getType());
+
+
+		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType(), getNextIntRegister());
+
+		varStack.push(variableSymbol);
+
+		if (varStack.peek().getType().equals("STRING"))
+		System.out.println(varStack.peek().getStringVal());
 		
 		node.getExpr().apply(this);
+		varStack.pop();
 
 		
 	}
@@ -508,6 +545,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
+		System.out.println("did we get here?");
 		
 		mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
 		varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));

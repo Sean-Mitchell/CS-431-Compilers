@@ -30,6 +30,12 @@ class Variable
 	}
 }
 
+
+/*
+ * 
+ * Method 
+ * 
+ */
 class Method
 {
 	private String name;
@@ -97,9 +103,83 @@ class Method
 	}
 }
 
+
+/*
+ * 
+ * Class 
+ * 
+ */
+class Class
+{
+	private String name;
+	private ArrayList<Variable> parameters;
+	private Hashtable<String, Variable> localVariables;
+	
+	public Class(String name) {
+		this.name = name;
+		parameters = new ArrayList<Variable>();
+		localVariables = new Hashtable<String, Variable>();
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	
+	public void addParam(Variable v) {
+		parameters.add(v);
+	}
+	
+	public void addVar(Variable v) {
+		localVariables.put(v.getName().trim(), v);
+	}
+	
+	public boolean containsParam(String id) {
+		for(int i = 0; i < parameters.size(); i++) {
+			if(parameters.get(i).getName().equals(id.trim())) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean containsVar(String id) {
+		return localVariables.containsKey(id.trim());
+	}
+	
+	public ArrayList<Variable> getParams() {
+		return parameters;
+	}
+	
+	public Variable getParam(String id) {
+		for(int i = 0; i < parameters.size(); i++) {
+			if(parameters.get(i).getName().equals(id.trim())) {
+				return parameters.get(i);
+			}
+		}
+		
+		return null;
+	}
+	
+	public Variable getVar(String id) {
+		return localVariables.get(id.trim());
+	}
+	
+	public Hashtable<String, Variable> getLocalVariables() {
+		return localVariables;
+	}
+}
+
+/*
+ * 
+ * Symbol Table 
+ * 
+ */
 class SymbolTable
 {
 	private Hashtable<String, Method> methods;
+	private Hashtable<String, Variable> classes;
 	private Hashtable<String, Variable> globalVariables;
 	
 	public SymbolTable() {
