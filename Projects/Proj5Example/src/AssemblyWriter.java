@@ -257,22 +257,9 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//SCOPE BOIS WEW LAD		
 		//checks method scope
-		if (symbolTable.containsMethod(currentScope.peek()))
-		{
-			//if the method exists in the global table then get it
-			//if that method contains the var we're looking at then add it into the variable symbol table
-			if (symbolTable.getMethod(currentScope.peek()).containsVar(node.getId().toString().trim()))
-			{
-				System.out.println(node.getId().toString());
-				tempVariable = symbolTable.getMethod(currentScope.peek()).getVar(node.getId().toString().trim());
-				stackPointerOffset = tempVariable.getspOffset();
-			}
-			
-			//check global
-		} else {
-			tempVariable = symbolTable.getVar(node.getId().toString());
-			stackPointerOffset = tempVariable.getspOffset();
-		}
+
+		tempVariable = getVariable(node.getId().toString());
+		stackPointerOffset = tempVariable.getspOffset();
 
 
 		System.out.println("Variable name and type");
@@ -344,18 +331,8 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//SCOPE BOIS WEW LAD		
 		//checks method scope
-		if (symbolTable.containsMethod(currentScope.peek()))
-		{
-			//if the method exists in the global table then get it
-			//if that method contains the var we're looking at then add it into the variable symbol table
-			if (symbolTable.getMethod(currentScope.peek()).containsVar(node.getId().toString().trim()))
-			{
-				tempVariable = symbolTable.getMethod(currentScope.peek()).getVar(node.getId().toString().trim());
-			}			
-			//check global
-		} else {
-			tempVariable = symbolTable.getVar(node.getId().toString());
-		}
+
+		tempVariable = getVariable(node.getId().toString());
 
 		
 		//System.out.println(varStack.peek().getRegister());
@@ -389,6 +366,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAIncrStmt(AIncrStmt node) {
+		/*register
+		mainAssembly.append("\tli  $a0, (" + register + ")\n");*/
 		
 	}
 	
@@ -682,5 +661,20 @@ class AssemblyWriter extends DepthFirstAdapter
 		int registerNumber = floatRegCounter % 11;
 		floatRegCounter++;
 		return "$f" + registerNumber;
+	}
+	
+	//returns the closest variable to your scope
+	private Variable getVariable(String Id) {
+		if (symbolTable.containsMethod(currentScope.peek()))
+		{
+			//if the method exists in the global table then get it
+			//if that method contains the var we're looking at then add it into the variable symbol table
+			if (symbolTable.getMethod(currentScope.peek()).containsVar(Id.trim()))
+			{
+				return symbolTable.getMethod(currentScope.peek()).getVar(Id.trim());
+			}			
+		}
+		//check global
+		return symbolTable.getVar(Id.trim());
 	}
 }
