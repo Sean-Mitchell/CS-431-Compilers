@@ -32,7 +32,7 @@ public class Main{
                 //the file that was passed in (normally the prog name defined in build.xml)
                 outputToFile(arguments[0], assembly.mainAssembly.toString() + assembly.dataAssembly.toString());
             } else {
-            	System.out.println("Parsing Issues.");
+            	System.out.println("Parsing Errors.");
             }
       }
       catch(Exception e){ System.out.println("Error: " + e.getMessage()); }

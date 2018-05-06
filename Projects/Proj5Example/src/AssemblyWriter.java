@@ -108,7 +108,6 @@ class AssemblyWriter extends DepthFirstAdapter
 				thisMethod.getVar(key).setspOffset(stackPointerAdded);
 				stackPointerAdded += 4;	
 				
-				System.out.println(thisMethod.getVar(key).getspOffset());
 			} else {
 				//Temporary, we still need to get the strings value
 				dataAssembly.append(key + ":\t.asciiz\n");
@@ -185,9 +184,7 @@ class AssemblyWriter extends DepthFirstAdapter
 			//and assign variable $sp offset
 			if (!thisMethod.getVar(key).getType().equals("STRING")) {
 				thisMethod.getVar(key).setspOffset(stackPointerAdded);
-				stackPointerAdded += 4;	
-				
-				System.out.println(thisMethod.getVar(key).getspOffset());
+				stackPointerAdded += 4;					
 			} else {
 				//Temporary, we still need to get the strings value
 				dataAssembly.append(key + ":\t.asciiz\n");
@@ -197,7 +194,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		//Must multiply the stackPointer by -1 so the stack grows correctly
 		stackPointerAdded *= -1;
 		
-		mainAssembly.append("\taddiu $sp, $sp," + stackPointerAdded + "\n");
+		mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
 	
 		node.getId().toString();
 		node.getType().toString();
@@ -256,6 +253,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		//Currently assume that this is a global scope 
 		//TODO: update with scopeStack thingy
 		Variable tempVariable = new Variable("wat","no");
+		int stackPointerOffset = 0;
 		
 		//SCOPE BOIS WEW LAD		
 		//checks method scope
@@ -267,28 +265,45 @@ class AssemblyWriter extends DepthFirstAdapter
 			{
 				System.out.println(node.getId().toString());
 				tempVariable = symbolTable.getMethod(currentScope.peek()).getVar(node.getId().toString().trim());
+				stackPointerOffset = tempVariable.getspOffset();
 			}
 			
 			//check global
 		} else {
 			tempVariable = symbolTable.getVar(node.getId().toString());
+			stackPointerOffset = tempVariable.getspOffset();
 		}
-		
+
 
 		System.out.println("Variable name and type");
 		System.out.println(tempVariable.getName());
 		System.out.println(tempVariable.getType());
 
+		
+		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType());
 
-		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType(), getNextIntRegister());
-
+		if (variableSymbol.getType().equals("INT") || variableSymbol.getType().equals("BOOLEAN")) {
+			variableSymbol.setRegister(getNextIntRegister());
+			
+		} else if (variableSymbol.getType().equals("REAL")) {
+			variableSymbol.setRegister(getNextFloatRegister());
+			
+		} else if (variableSymbol.getType().equals("STRING")) {
+			//may not need this in the assignment of a string variable later for print out
+			//but in case I do this is a temp use case
+			variableSymbol.setRegister("$a0");			
+		}		
+		
 		varStack.push(variableSymbol);
 
-		if (varStack.peek().getType().equals("STRING"))
-		System.out.println(varStack.peek().getStringVal());
+		System.out.println(varStack.peek().getId());
 		
 		node.getExpr().apply(this);
+		
+		mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");
+
 		varStack.pop();
+		System.out.println("GetExprPassed");
 
 		
 	}
@@ -323,24 +338,49 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAPutStmt(APutStmt node) {
 		node.getId().apply(this);		
+		System.out.println(node.getId());
+
+		Variable tempVariable = new Variable("wat","no");
+		
+		//SCOPE BOIS WEW LAD		
+		//checks method scope
+		if (symbolTable.containsMethod(currentScope.peek()))
+		{
+			//if the method exists in the global table then get it
+			//if that method contains the var we're looking at then add it into the variable symbol table
+			if (symbolTable.getMethod(currentScope.peek()).containsVar(node.getId().toString().trim()))
+			{
+				tempVariable = symbolTable.getMethod(currentScope.peek()).getVar(node.getId().toString().trim());
+			}			
+			//check global
+		} else {
+			tempVariable = symbolTable.getVar(node.getId().toString());
+		}
+
 		
 		//System.out.println(varStack.peek().getRegister());
 		//System.out.println(varStack.peek().getType());
 		
-		Symbol print = varStack.pop();
-		if (print.getType().equals("STRING")) {
+		System.out.println("PutStmt");
+		System.out.println(tempVariable.getType());
+		System.out.println(tempVariable.getspOffset());
+		if (tempVariable.getType().equals("STRING")) {
 			mainAssembly.append("\tli  $v0, 4\n");
-			mainAssembly.append("\tla  $a0, " + print.stringVal + "\n");
+			mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
 			mainAssembly.append("syscall\n");
 			
-		} else if (print.getType().equals("INT")) {
+		} else if (tempVariable.getType().trim().equals("INT")) {
+			String register = getNextIntRegister();
+			mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");			
 			mainAssembly.append("\tli  $v0, 1\n");
-			mainAssembly.append("\tla  $a0, (" + print.getRegister() + ")\n");
+			mainAssembly.append("\tla  $a0, (" + register + ")\n");
 			mainAssembly.append("syscall\n");
 			
-		} else if (print.getType().equals("REAL")) {
+		} else if (tempVariable.getType().trim().equals("REAL")) {
+			String register = getNextFloatRegister();
+			mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");		
 			mainAssembly.append("\tli  $v0, 2\n");
-			mainAssembly.append("\tla  $a0, (" + print.getRegister() + ")\n");
+			mainAssembly.append("\tla  $a0, (" + register + ")\n");
 			mainAssembly.append("syscall\n");
 			
 		} else {
@@ -444,15 +484,14 @@ class AssemblyWriter extends DepthFirstAdapter
 		if (variableType.equals("STRING")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t.asciiz\n");
 			
-		} else if (variableType.equals("INT")) {
+		} else if (variableType.equals("INT") || variableType.equals("BOOLEAN")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
 			
 		} else if (variableType.equals("REAL")) {
 			dataAssembly.append(node.getId().toString().trim() + ":\t .float\t 0.0\n");
 			
-		} else { //Boolean Boi
-			dataAssembly.append(node.getId().toString().trim() + ":\t .word\t 0\n");
 		}
+		
 		node.getMoreIds().apply(this);
 	}
 	
@@ -514,6 +553,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseATermExpr(ATermExpr node) {
+		
 		node.getTerm().apply(this);
 		
 	}
@@ -545,7 +585,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
-		System.out.println("did we get here?");
 		
 		mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
 		varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
@@ -634,12 +673,14 @@ class AssemblyWriter extends DepthFirstAdapter
 	//Used to cycle through normal registers
 	private String getNextIntRegister() {
 		int registerNumber = registerCounter % 7;
+		registerCounter++;
 		return "$t" + registerNumber;
 	}
 
 	//Used to cycle through float registers
 	private String getNextFloatRegister() {
 		int registerNumber = floatRegCounter % 11;
+		floatRegCounter++;
 		return "$f" + registerNumber;
 	}
 }

@@ -1,15 +1,14 @@
 BEGIN
 
 	temp : INT;
-	hullo , next , cool : STRING;
 	CLASS richard {
 		VOID MAIN(){
 			temp : INT;
 			dad: INT;
-			fdsafdd: INT;
 			dad := 999;
 			temp := 12;
 			PUT(temp);
+			PUT(dad);
 		}
 	}
 END

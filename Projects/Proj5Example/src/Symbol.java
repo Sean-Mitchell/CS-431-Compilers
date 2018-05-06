@@ -11,6 +11,7 @@ public class Symbol
 	
 	private String type;
 	private String register;
+	public String id;
 	
 	
 	/*
@@ -18,6 +19,12 @@ public class Symbol
 	 * Start of Constructors
 	 * 
 	 */
+	
+	public Symbol(String id, String outterType) {
+		this.id = id.trim();
+		this.type = outterType.trim();
+	}
+	
 	public Symbol(int outterVal, String outterType, String register) {
 		this.intVal = outterVal;
 		this.type = outterType.trim();
@@ -30,8 +37,33 @@ public class Symbol
 		this.register = register.trim();
 	}
 	
-	public Symbol(String outterVal, String outterType, String register) {
+	/*
+	 * Constructors that include ID
+	 */
+	public Symbol(String id, int outterVal, String outterType, String register) {
+		this.id = id.trim();
+		this.intVal = outterVal;
+		this.type = outterType.trim();
+		this.register = register.trim();
+	}
+
+	public Symbol(String id, float outterVal, String outterType, String register) {
+		this.id = id.trim();
+		this.floatVal = outterVal;
+		this.type = outterType.trim();
+		this.register = register.trim();
+	}
+	
+	//String with ID
+	public Symbol(String id, String outterVal, String outterType, String register) {
+		this.id = id.trim();
 		this.stringVal = outterVal.trim();
+		this.type = outterType.trim();
+		this.register = register.trim();
+	}
+	
+	public Symbol(String id, String outterType, String register) {
+		this.id = id.trim();
 		this.type = outterType.trim();
 		this.register = register.trim();
 	}
@@ -46,6 +78,10 @@ public class Symbol
 		this.intVal = amount;
 	}
 	
+	public void setRegister(String register) {
+		this.register = register;
+	}
+	
 	/*
 	 * 
 	 * Getters
@@ -57,6 +93,9 @@ public class Symbol
 	}
 	public String getType() {
 		return type;
+	}
+	public String getId() {
+		return id;
 	}
 	
 	public String getRegister() {
