@@ -387,6 +387,32 @@ class PrintTree extends DepthFirstAdapter
 					errorFound = true;
 				}
 			}
+		} else {
+			if (inMethodScope) {
+				if (currentMethod.containsVar(node.getId().toString())) {
+					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					errorFound = true;
+				}
+				
+				// Doesn't yet handle more_ids
+				currentMethod.addVar(new Variable(node.getId().toString(), node.getForOptionalType().toString()));
+			} else if (inClassScope) {
+				if (currentClass.containsVar(node.getId().toString())) {
+					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					errorFound = true;
+				}
+				
+				// Doesn't yet handle more_ids
+				currentClass.addVar(new Variable(node.getId().toString(), node.getForOptionalType().toString()));
+			} else {
+				if (symbolTable.containsVar(node.getId().toString())) {
+					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					errorFound = true;
+				}
+				
+				// Doesn't yet handle more_ids
+				symbolTable.addVar(new Variable(node.getId().toString(), node.getForOptionalType().toString()));
+			}
 		}
 		
 		node.getStmtseq().apply(this);
