@@ -121,12 +121,12 @@ class Method
 class Class
 {
 	private String name;
-	private ArrayList<Variable> parameters;
+	private Hashtable<String, Method> methods;
 	private Hashtable<String, Variable> localVariables;
 	
 	public Class(String name) {
 		this.name = name;
-		parameters = new ArrayList<Variable>();
+		methods = new Hashtable<String, Method>();
 		localVariables = new Hashtable<String, Variable>();
 	}
 	
@@ -134,41 +134,12 @@ class Class
 		return name;
 	}
 	
-	
-	public void addParam(Variable v) {
-		parameters.add(v);
-	}
-	
 	public void addVar(Variable v) {
 		localVariables.put(v.getName().trim(), v);
 	}
 	
-	public boolean containsParam(String id) {
-		for(int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getName().equals(id.trim())) {
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public boolean containsVar(String id) {
 		return localVariables.containsKey(id.trim());
-	}
-	
-	public ArrayList<Variable> getParams() {
-		return parameters;
-	}
-	
-	public Variable getParam(String id) {
-		for(int i = 0; i < parameters.size(); i++) {
-			if(parameters.get(i).getName().equals(id.trim())) {
-				return parameters.get(i);
-			}
-		}
-		
-		return null;
 	}
 	
 	public Variable getVar(String id) {
@@ -177,6 +148,23 @@ class Class
 	
 	public Hashtable<String, Variable> getLocalVariables() {
 		return localVariables;
+	}
+	
+	public boolean addMethod(Method m) {
+		if (!methods.contains(m.getName().trim())) {
+			methods.put(m.getName().trim(), m);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean containsMethod(String id) {
+		return methods.containsKey(id.trim());
+	}
+	
+	public Method getMethod(String id) {
+		return methods.get(id.trim());
 	}
 }
 
@@ -188,12 +176,30 @@ class Class
 class SymbolTable
 {
 	private Hashtable<String, Method> methods;
-	private Hashtable<String, Variable> classes;
+	private Hashtable<String, Class> classes;
 	private Hashtable<String, Variable> globalVariables;
 	
 	public SymbolTable() {
 		methods = new Hashtable<String, Method>();
+		classes = new Hashtable<String, Class>();
 		globalVariables = new Hashtable<String, Variable>();
+	}
+	
+	public boolean addClass (Class c) {
+		if (!classes.contains(c.getName().trim())) {
+			classes.put(c.getName().trim(), c);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean containsClass(String id) {
+		return classes.containsKey(id.trim());
+	}
+	
+	public Class getClass(String id) {
+		return classes.get(id.trim());
 	}
 	
 	public boolean addMethod(Method m) {
