@@ -14,6 +14,7 @@ class PrintTree extends DepthFirstAdapter
 	boolean inClassScope;
 	boolean inMethodScope;
 	public boolean errorFound;
+	public String exprType;
 
  	public PrintTree() {
 		System.out.println("Start of the Printing Action");
@@ -25,6 +26,7 @@ class PrintTree extends DepthFirstAdapter
 		inClassScope = false;
 		inMethodScope = false;
 		errorFound = false;
+		exprType = "";
 	}
 	
 	public void caseAProg(AProg node) {
@@ -237,27 +239,60 @@ class PrintTree extends DepthFirstAdapter
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
 		boolean varFound = false;
+		int location = -1;
 		
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getId().toString())) {
 				varFound = true;
+				location = 0;
 			}
 		}
 		
 		if (inClassScope && !varFound) {
 			if (currentClass.containsVar(node.getId().toString())) {
 				varFound = true;
+				location = 1;
 			}
 		}
 		
 		if (!varFound) {
 			if (!symbolTable.containsVar(node.getId().toString())) {
-				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has not been declared.");
+				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
 				errorFound = true;
+			} else {
+				location = 2;
 			}
 		}
 		
 		node.getExpr().apply(this);
+		
+		if (!errorFound) {
+			String type = "";
+			switch (location) {
+				case 0: type = currentMethod.getVar(node.getId().toString()).getType(); break;
+				case 1: type = currentClass.getVar(node.getId().toString()).getType(); break;
+				case 2: type = symbolTable.getVar(node.getId().toString()).getType(); break;
+			}
+			
+			if (type.equals("REAL")) {
+				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					errorFound = true;
+				}
+			} else if (type.equals("INT")) {
+				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					errorFound = true;
+				}
+			} else {
+				if (!exprType.equals(type)) {
+					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						errorFound = true;
+					}
+				}
+			}
+		}
 	}
 	
 	public void caseAAssignStringMethodstmtseq(AAssignStringMethodstmtseq node) {
@@ -316,7 +351,61 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignExprStmt(AAssignExprStmt node) {
+		boolean varFound = false;
+		int location = -1;
 		
+		if (inMethodScope) {
+			if (currentMethod.containsVar(node.getId().toString())) {
+				varFound = true;
+				location = 0;
+			}
+		}
+		
+		if (inClassScope && !varFound) {
+			if (currentClass.containsVar(node.getId().toString())) {
+				varFound = true;
+				location = 1;
+			}
+		}
+		
+		if (!varFound) {
+			if (!symbolTable.containsVar(node.getId().toString())) {
+				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
+				errorFound = true;
+			} else {
+				location = 2;
+			}
+		}
+		
+		node.getExpr().apply(this);
+		
+		if (!errorFound) {
+			String type = "";
+			switch (location) {
+				case 0: type = currentMethod.getVar(node.getId().toString()).getType(); break;
+				case 1: type = currentClass.getVar(node.getId().toString()).getType(); break;
+				case 2: type = symbolTable.getVar(node.getId().toString()).getType(); break;
+			}
+			
+			if (type.equals("REAL")) {
+				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					errorFound = true;
+				}
+			} else if (type.equals("INT")) {
+				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					errorFound = true;
+				}
+			} else {
+				if (!exprType.equals(type)) {
+					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						errorFound = true;
+					}
+				}
+			}
+		}
 	}
 	
 	public void caseAAssignStringStmt(AAssignStringStmt node) {
@@ -423,10 +512,6 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAPutStmt(APutStmt node) {
-		
-	}
-	
-	public void caseANegativeFactor(ANegativeFactor node) {
 		
 	}
 	
@@ -585,39 +670,71 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAAddExpr(AAddExpr node) {
-		
+		node.getExpr().apply(this);
+		node.getTerm().apply(this);
 	}
 	
 	public void caseATermExpr(ATermExpr node) {
-		
+		node.getTerm().apply(this);
 	}
 	
 	public void caseAMultTerm(AMultTerm node) {
-		
+		node.getTerm().apply(this);
+		node.getFactor().apply(this);
 	}
 	
 	public void caseAFactorTerm(AFactorTerm node) {
-		
+		node.getFactor().apply(this);
 	}
 	
 	public void caseAExprFactor(AExprFactor node) {
-		
+		node.getExpr().apply(this);
+	}
+	
+	public void caseANegativeFactor(ANegativeFactor node) {
+		node.getFactor().apply(this);
 	}
 	
 	public void caseAIntFactor(AIntFactor node) {
-		
+		exprType = "INT";
 	}
 	
 	public void caseARealFactor(ARealFactor node) {
-		
+		exprType = "REAL";
 	}
 	
 	public void caseAArrayFactor(AArrayFactor node) {
-		
+		node.getArrayOrId().apply(this);
 	}
 	
 	public void caseAIdvarlistFactor(AIdvarlistFactor node) {
+		boolean varFound = false;
+		int location = -1;
 		
+		if (inClassScope && !varFound) {
+			if (currentClass.containsMethod(node.getId().toString())) {
+				varFound = true;
+				location = 1;
+			}
+		}
+		
+		if (!varFound) {
+			if (!symbolTable.containsMethod(node.getId().toString())) {
+				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: method " + node.getId().toString() + " has not been declared.");
+				errorFound = true;
+			} else {
+				location = 2;
+			}
+		}
+		
+		String type = "";
+		
+		switch (location) {
+			case 1: type = currentClass.getMethod(node.getId().toString()).getType(); break;
+			case 2: type = symbolTable.getMethod(node.getId().toString()).getType(); break;
+		}
+		
+		exprType = type;
 	}
 	
 	public void caseALastFactor(ALastFactor node) {
