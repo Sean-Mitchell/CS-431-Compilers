@@ -7,6 +7,7 @@ class Variable
 	private String name;
 	private String type;
 	private int spOffset;
+	private boolean isGlobal;
 	
 	public Variable(String name, String type) {
 		this.name = name;
@@ -25,8 +26,16 @@ class Variable
 		return spOffset;
 	}
 	
+	public void setIsGlobal(boolean isGlobal) {
+		this.isGlobal = isGlobal;
+	}
+	
 	public void setspOffset(int offset) {
 		this.spOffset = offset;
+	}
+	
+	public boolean isGlobal() {
+		return isGlobal;
 	}
 }
 

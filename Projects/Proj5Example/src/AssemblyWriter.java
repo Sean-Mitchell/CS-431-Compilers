@@ -177,7 +177,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		System.out.println("METHOD TESTV2");
 		
 		//variable to hold the amount that the stack pointer should be added
-		int stackPointerAdded = 0;
+		int stackPointerAdded = 4;
 		
 		for (String key : variableNames) {
 			//If the variable is not equal to string, add 4 (bytes) to stack
@@ -224,10 +224,20 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignIncMethodstmtseq(AAssignIncMethodstmtseq node) {
+		Variable currVariable = getVariable(node.getId().toString());
+		String register = getNextIntRegister();
+		mainAssembly.append("\tlw  " + register + ", " + currVariable.getspOffset() + "($sp)\n");
+		mainAssembly.append("\taddi  " + register + ", " + register + ", 1\n");
+		mainAssembly.append("\tsw "+ register + ", " + currVariable.getspOffset() + "($sp)\n");	
 		
 	}
 	
 	public void caseAAssignDecMethodstmtseq(AAssignDecMethodstmtseq node) {
+		Variable currVariable = getVariable(node.getId().toString());
+		String register = getNextIntRegister();
+		mainAssembly.append("\tlw  " + register + ", " + currVariable.getspOffset() + "($sp)\n");
+		mainAssembly.append("\tsubi  " + register + ", " + register + ", 1\n");
+		mainAssembly.append("\tsw "+ register + ", " + currVariable.getspOffset() + "($sp)\n");	
 		
 	}
 	
@@ -287,7 +297,11 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		node.getExpr().apply(this);
 		
-		mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");
+		if(tempVariable.isGlobal()) {
+			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
+		} else {
+			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");			
+		}	
 
 		varStack.pop();
 		System.out.println("GetExprPassed");
@@ -341,37 +355,88 @@ class AssemblyWriter extends DepthFirstAdapter
 		System.out.println("PutStmt");
 		System.out.println(tempVariable.getType());
 		System.out.println(tempVariable.getspOffset());
-		if (tempVariable.getType().equals("STRING")) {
-			mainAssembly.append("\tli  $v0, 4\n");
-			mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
-			mainAssembly.append("syscall\n");
-			
-		} else if (tempVariable.getType().trim().equals("INT")) {
-			String register = getNextIntRegister();
-			mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");			
-			mainAssembly.append("\tli  $v0, 1\n");
-			mainAssembly.append("\tla  $a0, (" + register + ")\n");
-			mainAssembly.append("syscall\n");
-			
-		} else if (tempVariable.getType().trim().equals("REAL")) {
-			String register = getNextFloatRegister();
-			mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");		
-			mainAssembly.append("\tli  $v0, 2\n");
-			mainAssembly.append("\tla  $a0, (" + register + ")\n");
-			mainAssembly.append("syscall\n");
-			
-		} else {
-			
-		}
-	}
-	
-	public void caseAIncrStmt(AIncrStmt node) {
-		/*register
-		mainAssembly.append("\tli  $a0, (" + register + ")\n");*/
+		
+
+		
+		if (tempVariable.isGlobal()) {	
+			if (tempVariable.getType().equals("STRING")) {
+				mainAssembly.append("\tli  $v0, 4\n");
+				mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("INT")) {
+				String register = getNextIntRegister();
+				mainAssembly.append("\tlw " + register + ", " + node.getId().toString() + "\n");			
+				mainAssembly.append("\tli  $v0, 1\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("REAL")) {
+				String register = getNextFloatRegister();
+				mainAssembly.append("\tlw " + register + ", " + node.getId().toString() + "\n");		
+				mainAssembly.append("\tli  $v0, 2\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else {
+				
+			}		
+		} else {	
+			if (tempVariable.getType().equals("STRING")) {
+				mainAssembly.append("\tli  $v0, 4\n");
+				mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("INT")) {
+				String register = getNextIntRegister();
+				mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");			
+				mainAssembly.append("\tli  $v0, 1\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("REAL")) {
+				String register = getNextFloatRegister();
+				mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");		
+				mainAssembly.append("\tli  $v0, 2\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else {
+				
+			}	
+		}		
+		
 		
 	}
 	
+	public void caseAIncrStmt(AIncrStmt node) {
+		Variable currVariable = getVariable(node.getId().toString());
+		String register = getNextIntRegister();
+		
+		if (currVariable.isGlobal()) {
+			mainAssembly.append("\tlw  " + register + ", " + node.getId().toString()+ "\n");
+			mainAssembly.append("\taddi  " + register + ", " + register + ", 1\n");
+			mainAssembly.append("\tsw "+ register + ", " + node.getId().toString() + "\n");				
+		} else {
+			mainAssembly.append("\tlw  " + register + ", " + currVariable.getspOffset() + "($sp)\n");
+			mainAssembly.append("\taddi  " + register + ", " + register + ", 1\n");
+			mainAssembly.append("\tsw "+ register + ", " + currVariable.getspOffset() + "($sp)\n");			
+		}		
+	}
+	
 	public void caseADecrStmt(ADecrStmt node) {
+		Variable currVariable = getVariable(node.getId().toString());
+		String register = getNextIntRegister();
+		
+		if (currVariable.isGlobal()) {
+			mainAssembly.append("\tlw  " + register + ", " + node.getId().toString()+ "\n");
+			mainAssembly.append("\tsubi  " + register + ", " + register + ", 1\n");
+			mainAssembly.append("\tsw "+ register + ", " + node.getId().toString() + "\n");				
+		} else {
+			mainAssembly.append("\tlw  " + register + ", " + currVariable.getspOffset() + "($sp)\n");
+			mainAssembly.append("\tsubi  " + register + ", " + register + ", 1\n");
+			mainAssembly.append("\tsw "+ register + ", " + currVariable.getspOffset() + "($sp)\n");			
+		}	
 		
 	}
 	
@@ -562,6 +627,10 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 	}
 	
+	public void caseANegativeFactor(ANegativeFactor node) {
+		
+	}
+	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
 		
@@ -671,10 +740,13 @@ class AssemblyWriter extends DepthFirstAdapter
 			//if that method contains the var we're looking at then add it into the variable symbol table
 			if (symbolTable.getMethod(currentScope.peek()).containsVar(Id.trim()))
 			{
+				symbolTable.getMethod(currentScope.peek()).getVar(Id.trim()).setIsGlobal(false);
 				return symbolTable.getMethod(currentScope.peek()).getVar(Id.trim());
 			}			
 		}
 		//check global
+		symbolTable.getVar(Id.trim()).setIsGlobal(true);
+		
 		return symbolTable.getVar(Id.trim());
 	}
 }

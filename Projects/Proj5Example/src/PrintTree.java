@@ -265,6 +265,10 @@ class PrintTree extends DepthFirstAdapter
 		
 	}
 	
+	public void caseANegativeFactor(ANegativeFactor node) {
+		
+	}
+	
 	public void caseAIncrStmt(AIncrStmt node) {
 		
 	}
