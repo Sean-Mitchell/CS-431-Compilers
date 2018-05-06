@@ -365,7 +365,7 @@ class PrintTree extends DepthFirstAdapter
 	}
 	
 	public void caseAForStmt(AForStmt node) {
-		if(node.getForOptionalType().toString().length() > 0) {
+		if(node.getForOptionalType().toString().length() == 0) {
 			// Need to deal with another scope
 			boolean varFound = false;
 		
