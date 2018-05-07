@@ -648,13 +648,42 @@ class AssemblyWriter extends DepthFirstAdapter
 		// If either of the returned amounts are real, then the int will have to be turned into a real
 		// that way there isn't loss of data 
 		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
-			mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");	
-			mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");	
+			
+			if(expVal.getId().equals("")) {
+				mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+			} else {
+				mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");				
+			}			
+
+			if(expTerm.getId().equals("")) {
+				mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+			} else {
+				mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getspOffset() + "($sp)\n");				
+			}
+
 			register = getNextFloatRegister();		
 			varStack.push(new Symbol("", "REAL", register));
 		} else  {
-			mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");	
-			mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");	
+			
+			if(expVal.getId().equals("")) {
+				mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+			} else {
+				if (expVal.getIsGlobal()) {
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getId() + "\n");				
+				} else {
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");	
+				}			
+			}			
+
+			if(expTerm.getId().equals("")) {
+				mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+			} else {
+				if (expTerm.getIsGlobal()) {
+					mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getId() + "\n");				
+				} else {
+					mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getspOffset() + "($sp)\n");	
+				}					
+			}
 			register = getNextIntRegister();
 			varStack.push(new Symbol("", "INT", register));	
 		}
@@ -743,8 +772,13 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 		} else if (tempVariable.getType().trim().equals("INT")) {
 			String register = getNextIntRegister();
-			System.out.println("HIT ME LMAO");
-			varStack.push(new Symbol(tempVariable.getName().trim(), "INT", register));
+			Symbol tempSymbol = new Symbol(tempVariable.getName().trim(), "INT", register);
+			if (tempVariable.isGlobal()) {
+				tempSymbol.setIsGlobal(true);				
+			} else {
+				tempSymbol.setspOffset(tempVariable.getspOffset());
+			}
+			varStack.push(tempSymbol);
 			
 		} else if (tempVariable.getType().trim().equals("REAL")) {
 			String register = getNextFloatRegister();

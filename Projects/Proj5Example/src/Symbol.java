@@ -15,6 +15,7 @@ public class Symbol
 	private String id = "";
 	private boolean valueSet;
 	private boolean isGlobal;
+	private int spOffset;
 	
 	
 	/*
@@ -87,12 +88,16 @@ public class Symbol
 		this.intVal = amount;
 	}
 	
-	public void setRegister(String register) {
-		this.register = register.trim();
-	}
-	
 	public void setIsGlobal(boolean global) {
 		this.isGlobal = global;
+	}
+	
+	public void setspOffset(int offset) {
+		this.spOffset = offset;
+	}
+	
+	public void setRegister(String register) {
+		this.register = register.trim();
 	}
 	
 	/*
@@ -110,6 +115,10 @@ public class Symbol
 		if(type.equals("STRING"))
 			return stringVal.trim() + "";
 		return boolVal + "";
+	}
+	
+	public int getspOffset() {
+		return spOffset;
 	}
 	
 	public boolean getValueSet() {
