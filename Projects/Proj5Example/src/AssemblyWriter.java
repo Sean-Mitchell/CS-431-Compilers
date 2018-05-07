@@ -299,10 +299,17 @@ class AssemblyWriter extends DepthFirstAdapter
 			//but in case I do this is a temp use case
 			variableSymbol.setRegister("$a0");			
 		}	
+		System.out.println("WHY ISN'T 12 SHOWING UP");
+		System.out.println(expVal.getValueSet());
+		System.out.println(expVal.getId());
+		System.out.println(expVal.getType());
+		System.out.println(expVal.getValue());
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
 				//This is only true when a value is being assigned the first time
+				
+				
 				if(expVal.getValueSet()) {
 					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
 				} else {
@@ -324,6 +331,7 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
 		} else {
+			mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");			
 		}	
 
@@ -619,10 +627,14 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAAddExpr(AAddExpr node) {
 		node.getExpr().apply(this);
 		node.getTerm().apply(this);
+		//get lefthand side of assignment
 		Symbol expTerm = varStack.pop();
+		//get righthand side of assignment
 		Symbol expVal = varStack.pop();
 		String register;
 
+		// If either of the returned amounts are real, then the int will have to be turned into a real
+		// that way there isn't loss of data 
 		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
 			mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");	
 			mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");	
@@ -676,10 +688,10 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
-		varStack.push(new Symbol(Integer.parseInt(node.getInt().toString().trim()), "INT", getNextIntRegister(), true));
+		Symbol tempSymbol = new Symbol(Integer.parseInt(node.getInt().toString().trim()), "INT", getNextIntRegister(), false);
+		tempSymbol.setIsGlobal(true);
+		varStack.push(tempSymbol);
 		System.out.println(varStack.peek().getValue());
-		//mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
-		//varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
 	}
 	
 	//li.s because it's a floating point
@@ -702,6 +714,34 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAArrayArrayOrId(AArrayArrayOrId node) {
+		Variable tempVariable = getVariable(node.getId().toString());
+		
+		//Do this during push onto stack
+		if (tempVariable.isGlobal()) {
+			
+		}
+		
+		//Not going to worry about arrays.  The plan is just to get ID's to work
+		if (tempVariable.getType().equals("STRING")) {
+			mainAssembly.append("\tli  $v0, 4\n");
+			mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
+			mainAssembly.append("syscall\n");
+			
+		} else if (tempVariable.getType().trim().equals("INT")) {
+			String register = getNextIntRegister();
+			varStack.push(new Symbol(Integer.parseInt(tempVariable.getName()), "INT", register));
+			
+		} else if (tempVariable.getType().trim().equals("REAL")) {
+			String register = getNextFloatRegister();
+			mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");		
+			mainAssembly.append("\tli  $v0, 2\n");
+			mainAssembly.append("\tla  $a0, (" + register + ")\n");
+			mainAssembly.append("syscall\n");
+			
+		} else {
+			
+		}
+		System.out.println(varStack.peek().getValue());
 		
 	}
 	

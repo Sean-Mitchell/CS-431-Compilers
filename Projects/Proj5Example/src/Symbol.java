@@ -5,15 +5,16 @@ import java.util.*;
 
 public class Symbol
 {
-	public int intVal = -1;
-	public float floatVal = -1.1f;
+	public int intVal;
+	public float floatVal;
 	public String stringVal = "";
 	public boolean boolVal = false;
 	
 	private String type = "";
 	private String register = "";
 	private String id = "";
-	private boolean valueSet = false;
+	private boolean valueSet;
+	private boolean isGlobal;
 	
 	
 	/*
@@ -38,6 +39,7 @@ public class Symbol
 		this.floatVal = outterVal;
 		this.type = outterType.trim();
 		this.register = register.trim();
+		valueSet = false;
 	}
 	
 	/*
@@ -48,6 +50,7 @@ public class Symbol
 		this.intVal = outterVal;
 		this.type = outterType.trim();
 		this.register = register.trim();
+		valueSet = true;
 	}
 
 	public Symbol(String id, float outterVal, String outterType, String register) {
@@ -55,6 +58,7 @@ public class Symbol
 		this.floatVal = outterVal;
 		this.type = outterType.trim();
 		this.register = register.trim();
+		valueSet = true;
 	}
 	
 	//String with ID
@@ -63,12 +67,14 @@ public class Symbol
 		this.stringVal = outterVal.trim();
 		this.type = outterType.trim();
 		this.register = register.trim();
+		valueSet = true;
 	}
 	
 	public Symbol(String id, String outterType, String register) {
 		this.id = id.trim();
 		this.type = outterType.trim();
 		this.register = register.trim();
+		valueSet = false;
 	}
 
 	/*
@@ -83,6 +89,10 @@ public class Symbol
 	
 	public void setRegister(String register) {
 		this.register = register;
+	}
+	
+	public void setIsGlobal(boolean global) {
+		this.isGlobal = global;
 	}
 	
 	/*
@@ -114,6 +124,10 @@ public class Symbol
 	}
 	public String getId() {
 		return id;
+	}
+	
+	public boolean getIsGlobal() {
+		return isGlobal;
 	}
 	
 	public String getRegister() {
