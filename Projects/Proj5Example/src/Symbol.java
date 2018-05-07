@@ -88,7 +88,7 @@ public class Symbol
 	}
 	
 	public void setRegister(String register) {
-		this.register = register;
+		this.register = register.trim();
 	}
 	
 	public void setIsGlobal(boolean global) {
@@ -108,7 +108,7 @@ public class Symbol
 		if(type.equals("REAL"))
 			return floatVal + "";
 		if(type.equals("STRING"))
-			return stringVal + "";
+			return stringVal.trim() + "";
 		return boolVal + "";
 	}
 	
@@ -117,13 +117,13 @@ public class Symbol
 	}
 	
 	public String getStringVal() {
-		return stringVal;
+		return stringVal.trim();
 	}
 	public String getType() {
-		return type;
+		return type.trim();
 	}
 	public String getId() {
-		return id;
+		return id.trim();
 	}
 	
 	public boolean getIsGlobal() {
@@ -131,6 +131,6 @@ public class Symbol
 	}
 	
 	public String getRegister() {
-		return register;
+		return register.trim();
 	}
 }

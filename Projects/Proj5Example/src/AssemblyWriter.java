@@ -299,11 +299,6 @@ class AssemblyWriter extends DepthFirstAdapter
 			//but in case I do this is a temp use case
 			variableSymbol.setRegister("$a0");			
 		}	
-		System.out.println("WHY ISN'T 12 SHOWING UP");
-		System.out.println(expVal.getValueSet());
-		System.out.println(expVal.getId());
-		System.out.println(expVal.getType());
-		System.out.println(expVal.getValue());
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
@@ -331,7 +326,27 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
 		} else {
-			mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");
+			
+			if(expVal.getType().equals("INT")) {
+				//This is only true when a value is being assigned the first time				
+				if(expVal.getValueSet()) {
+					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+				} else {
+					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
+				}		
+			} else if(expVal.getType().equals("REAL")) {
+				//This is only true when a value is being assigned the first time
+				if(expVal.getValueSet()) {
+					mainAssembly.append("\tli.s\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+				} else {
+					mainAssembly.append("\ttmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
+				}	
+			} else if(expVal.getType().equals("STRING")) {
+				//TODO
+
+			} else {
+				mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");						
+			}
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");			
 		}	
 
@@ -370,9 +385,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAPutStmt(APutStmt node) {
-		node.getId().apply(this);		
-		System.out.println(node.getId());
-
 		Variable tempVariable = new Variable("wat","no");
 		
 		//SCOPE BOIS WEW LAD		
@@ -688,10 +700,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
-		Symbol tempSymbol = new Symbol(Integer.parseInt(node.getInt().toString().trim()), "INT", getNextIntRegister(), false);
-		tempSymbol.setIsGlobal(true);
+		Symbol tempSymbol = new Symbol(Integer.parseInt(node.getInt().toString().trim()), "INT", getNextIntRegister(), true);
 		varStack.push(tempSymbol);
-		System.out.println(varStack.peek().getValue());
 	}
 	
 	//li.s because it's a floating point
@@ -702,7 +712,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAArrayFactor(AArrayFactor node) {
-		
+		node.getArrayOrId().apply(this);
 	}
 	
 	public void caseAIdvarlistFactor(AIdvarlistFactor node) {
@@ -714,7 +724,11 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAArrayArrayOrId(AArrayArrayOrId node) {
-		Variable tempVariable = getVariable(node.getId().toString());
+		
+	}
+	
+	public void caseAIdArrayOrId(AIdArrayOrId node) {
+		Variable tempVariable = getVariable(node.getId().toString().trim());
 		
 		//Do this during push onto stack
 		if (tempVariable.isGlobal()) {
@@ -729,7 +743,8 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 		} else if (tempVariable.getType().trim().equals("INT")) {
 			String register = getNextIntRegister();
-			varStack.push(new Symbol(Integer.parseInt(tempVariable.getName()), "INT", register));
+			System.out.println("HIT ME LMAO");
+			varStack.push(new Symbol(tempVariable.getName().trim(), "INT", register));
 			
 		} else if (tempVariable.getType().trim().equals("REAL")) {
 			String register = getNextFloatRegister();
@@ -742,10 +757,6 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 		}
 		System.out.println(varStack.peek().getValue());
-		
-	}
-	
-	public void caseAIdArrayOrId(AIdArrayOrId node) {
 		
 	}
 	
