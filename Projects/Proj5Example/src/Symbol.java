@@ -29,6 +29,13 @@ public class Symbol
 		this.type = outterType.trim();
 	}
 	
+	public Symbol(String outterId, String outterType, String register, boolean valueSet) {
+		this.id = outterId;
+		this.type = outterType.trim();
+		this.register = register.trim();
+		this.valueSet = valueSet;
+	}
+	
 	public Symbol(int outterVal, String outterType, String register, boolean valueSet) {
 		this.intVal = outterVal;
 		this.type = outterType.trim();

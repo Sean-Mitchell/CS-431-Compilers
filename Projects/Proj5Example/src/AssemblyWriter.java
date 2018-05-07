@@ -645,28 +645,42 @@ class AssemblyWriter extends DepthFirstAdapter
 		Symbol expVal = varStack.pop();
 		String register;
 
+		
+		System.out.println("ADD EXPRESSION: EXP");
+		System.out.println(expTerm.getType());
+		System.out.println(expTerm.getId());
+		System.out.println(expTerm.getValueSet());
+		System.out.println("ADD EXPRESSION: expVal");
+		System.out.println(expVal.getType());
+		System.out.println(expVal.getId());
+		System.out.println(expVal.getValueSet());
+		
+		
 		// If either of the returned amounts are real, then the int will have to be turned into a real
 		// that way there isn't loss of data 
 		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
 			
 			if(expVal.getId().equals("")) {
-				mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+				if (expVal.getValueSet())
+					mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
 			} else {
 				mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");				
 			}			
 
 			if(expTerm.getId().equals("")) {
-				mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+				if (expTerm.getValueSet())
+					mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
 			} else {
 				mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getspOffset() + "($sp)\n");				
 			}
 
 			register = getNextFloatRegister();		
-			varStack.push(new Symbol("", "REAL", register));
+			varStack.push(new Symbol("", "REAL", register, false));
 		} else  {
 			
 			if(expVal.getId().equals("")) {
-				mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+				if (expVal.getValueSet())
+					mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
 			} else {
 				if (expVal.getIsGlobal()) {
 					mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getId() + "\n");				
@@ -676,7 +690,8 @@ class AssemblyWriter extends DepthFirstAdapter
 			}			
 
 			if(expTerm.getId().equals("")) {
-				mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+				if (expTerm.getValueSet())
+					mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
 			} else {
 				if (expTerm.getIsGlobal()) {
 					mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getId() + "\n");				
@@ -685,7 +700,7 @@ class AssemblyWriter extends DepthFirstAdapter
 				}					
 			}
 			register = getNextIntRegister();
-			varStack.push(new Symbol("", "INT", register));	
+			varStack.push(new Symbol("", "INT", register, false));	
 		}
 		
 		

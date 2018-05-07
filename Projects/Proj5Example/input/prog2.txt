@@ -7,7 +7,7 @@ BEGIN
 		PUT(temp);
 		dad := 1 + 1;
 		PUT(dad);
-		dad := 1 + dad;
+		dad := 1 + 2 + 3;
 		PUT(dad);
 	}
 	CLASS richard {
