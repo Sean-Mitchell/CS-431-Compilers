@@ -5,13 +5,15 @@ import java.util.*;
 
 public class Symbol
 {
-	public int intVal;
-	public float floatVal;
-	public String stringVal;
+	public int intVal = -1;
+	public float floatVal = -1.1f;
+	public String stringVal = "";
+	public boolean boolVal = false;
 	
-	private String type;
-	private String register;
-	public String id;
+	private String type = "";
+	private String register = "";
+	private String id = "";
+	private boolean valueSet = false;
 	
 	
 	/*
@@ -25,10 +27,11 @@ public class Symbol
 		this.type = outterType.trim();
 	}
 	
-	public Symbol(int outterVal, String outterType, String register) {
+	public Symbol(int outterVal, String outterType, String register, boolean valueSet) {
 		this.intVal = outterVal;
 		this.type = outterType.trim();
 		this.register = register.trim();
+		this.valueSet = valueSet;
 	}
 
 	public Symbol(float outterVal, String outterType, String register) {
@@ -88,6 +91,21 @@ public class Symbol
 	 * 
 	 * 
 	 */
+	
+	public String getValue() {
+		if(type.equals("INT"))
+			return intVal + "";
+		if(type.equals("REAL"))
+			return floatVal + "";
+		if(type.equals("STRING"))
+			return stringVal + "";
+		return boolVal + "";
+	}
+	
+	public boolean getValueSet() {
+		return valueSet;
+	}
+	
 	public String getStringVal() {
 		return stringVal;
 	}

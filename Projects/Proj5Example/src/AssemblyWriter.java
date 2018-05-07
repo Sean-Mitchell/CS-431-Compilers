@@ -207,7 +207,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
-		node.getId().toString();
+		System.out.println(node.getId().toString());
 		node.getExpr().apply(this);
 	}
 	
@@ -277,8 +277,17 @@ class AssemblyWriter extends DepthFirstAdapter
 		System.out.println(tempVariable.getType());
 
 		
-		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType());
+		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType());	
+		
+		varStack.push(variableSymbol);
 
+		System.out.println(varStack.peek().getId());
+		
+		node.getExpr().apply(this);
+		
+		Symbol expVal = varStack.pop();
+
+		//SetRegister after all expressions are gotten so the piece isn't overwritten
 		if (variableSymbol.getType().equals("INT") || variableSymbol.getType().equals("BOOLEAN")) {
 			variableSymbol.setRegister(getNextIntRegister());
 			
@@ -289,15 +298,30 @@ class AssemblyWriter extends DepthFirstAdapter
 			//may not need this in the assignment of a string variable later for print out
 			//but in case I do this is a temp use case
 			variableSymbol.setRegister("$a0");			
-		}		
-		
-		varStack.push(variableSymbol);
-
-		System.out.println(varStack.peek().getId());
-		
-		node.getExpr().apply(this);
+		}	
 		
 		if(tempVariable.isGlobal()) {
+			if(expVal.getType().equals("INT")) {
+				//This is only true when a value is being assigned the first time
+				if(expVal.getValueSet()) {
+					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+				} else {
+					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
+				}		
+			} else if(expVal.getType().equals("REAL")) {
+				//This is only true when a value is being assigned the first time
+				if(expVal.getValueSet()) {
+					mainAssembly.append("\tli.s\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+				} else {
+					mainAssembly.append("\ttmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
+				}	
+			} else if(expVal.getType().equals("STRING")) {
+				//TODO
+
+			} else {
+				mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");						
+			}
+			
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
 		} else {
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");			
@@ -593,11 +617,30 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAAddExpr(AAddExpr node) {
+		node.getExpr().apply(this);
+		node.getTerm().apply(this);
+		Symbol expTerm = varStack.pop();
+		Symbol expVal = varStack.pop();
+		String register;
+
+		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
+			mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");	
+			mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");	
+			register = getNextFloatRegister();		
+			varStack.push(new Symbol("", "REAL", register));
+		} else  {
+			mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");	
+			mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");	
+			register = getNextIntRegister();
+			varStack.push(new Symbol("", "INT", register));	
+		}
+		
+		
+		mainAssembly.append("\tadd  " + register + ", "+ expTerm.getRegister() + ", " + expVal.getRegister() + "\n");
 		
 	}
 	
 	public void caseATermExpr(ATermExpr node) {
-		
 		node.getTerm().apply(this);
 		
 	}
@@ -633,9 +676,10 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//li cause it's an int
 	public void caseAIntFactor(AIntFactor node) {
-		
-		mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
-		varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
+		varStack.push(new Symbol(Integer.parseInt(node.getInt().toString().trim()), "INT", getNextIntRegister(), true));
+		System.out.println(varStack.peek().getValue());
+		//mainAssembly.append("\tli\t" + varStack.peek().getRegister() + "\t" + node.getInt().toString().trim() + "\n");	
+		//varStack.peek().setInt(Integer.parseInt(node.getInt().toString().trim()));
 	}
 	
 	//li.s because it's a floating point

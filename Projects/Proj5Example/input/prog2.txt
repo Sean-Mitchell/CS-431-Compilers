@@ -1,18 +1,13 @@
 BEGIN
-
-	temp : INT;
 	dad: INT;
+	VOID MAIN(){
+		temp : INT;
+		dad := 0;
+		temp := 12;
+		PUT(temp);
+		dad := 1 + 1;
+		PUT(dad);
+	}
 	CLASS richard {
-		VOID MAIN(){
-			temp : INT;
-			dad := 999;
-			temp := 12;
-			PUT(temp);
-			PUT(dad);
-			dad++;
-			PUT(dad);
-			dad--;
-			PUT(dad);
-		}
 	}
 END
