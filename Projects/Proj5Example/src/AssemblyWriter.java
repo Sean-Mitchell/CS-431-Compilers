@@ -55,7 +55,12 @@ class AssemblyWriter extends DepthFirstAdapter
 		//Initial Add stuff
 		mainAssembly.append("\t.text\n").append("\t.global main\n").append("main:\n");
 		dataAssembly.append("\t.data\n");
+		
+		//Tree Traversal Start
         node.getClassmethodstmts().apply(this);
+        
+        //Exit program routine
+        mainAssembly.append("exit: \n").append("\t.li\t$v0, 10\n").append("syscall\n");
 		System.out.println("main\n" + mainAssembly.toString() + "\n" + dataAssembly.toString() );
 	}
 	
@@ -96,8 +101,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		//push scope onto stack
 		currentScope.push(node.getId().toString().trim());
 		
-		System.out.println("METHOD TEST");
-		
 		//variable to hold the amount that the stack pointer should be added
 		int stackPointerAdded = 0;
 		
@@ -121,7 +124,11 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
-
+		
+		//Assume main method is all caps and only happens once
+		if (node.getId().toString().trim().equals("MAIN")) 
+			mainAssembly.append("\tb exit\n");
+			
 	}
 	
 	public void caseAVarDeclClassmethodstmt(AVarDeclClassmethodstmt node) {
@@ -174,7 +181,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		//push scope onto stack
 		currentScope.push(node.getId().toString().trim());
 		
-		System.out.println("METHOD TESTV2");
 		
 		//variable to hold the amount that the stack pointer should be added
 		int stackPointerAdded = 4;
@@ -207,7 +213,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
-		System.out.println(node.getId().toString());
+//		System.out.println(node.getId().toString());
 		node.getExpr().apply(this);
 	}
 	
@@ -272,16 +278,14 @@ class AssemblyWriter extends DepthFirstAdapter
 		stackPointerOffset = tempVariable.getspOffset();
 
 
-		System.out.println("Variable name and type");
-		System.out.println(tempVariable.getName());
-		System.out.println(tempVariable.getType());
+//		System.out.println("Variable name and type");
+//		System.out.println(tempVariable.getName());
+//		System.out.println(tempVariable.getType());
 
 		
 		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType());	
 		
 		varStack.push(variableSymbol);
-
-		System.out.println(varStack.peek().getId());
 		
 		node.getExpr().apply(this);
 		
@@ -375,7 +379,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		}	
 
 		varStack.pop();
-		System.out.println("GetExprPassed");
 
 		
 	}
@@ -419,12 +422,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//System.out.println(varStack.peek().getRegister());
 		//System.out.println(varStack.peek().getType());
-		
-		System.out.println("PutStmt");
-		System.out.println(tempVariable.getType());
-		System.out.println(tempVariable.getspOffset());
-		
-
 		
 		if (tempVariable.isGlobal()) {	
 			if (tempVariable.getType().equals("STRING")) {
@@ -513,7 +510,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodCallStmt(AMethodCallStmt node) {
-		
+		System.out.println(node.getId().toString());
 	}
 	
 	public void caseAMethodCallInClassStmt(AMethodCallInClassStmt node) {
@@ -835,8 +832,9 @@ class AssemblyWriter extends DepthFirstAdapter
 	//li.s because it's a floating point
 	public void caseARealFactor(ARealFactor node) {
 		//I think this should be pushed on the stack, uncertain atm
-		
-		mainAssembly.append("\t\tli.s\t" + varStack.peek().getRegister() + "\t" + node.getReal().toString().trim() + "\n");		
+		Symbol tempSymbol = new Symbol(Integer.parseInt(node.getReal().toString().trim()), "REAL", getNextFloatRegister(), true);
+		varStack.push(tempSymbol);		
+		//mainAssembly.append("\t\tli.s\t" + varStack.peek().getRegister() + "\t" + node.getReal().toString().trim() + "\n");		
 	}
 	
 	public void caseAArrayFactor(AArrayFactor node) {
@@ -857,11 +855,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAIdArrayOrId(AIdArrayOrId node) {
 		Variable tempVariable = getVariable(node.getId().toString().trim());
-		
-		//Do this during push onto stack
-		if (tempVariable.isGlobal()) {
-			
-		}
 		
 		//Not going to worry about arrays.  The plan is just to get ID's to work
 		if (tempVariable.getType().equals("STRING")) {
@@ -889,7 +882,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		} else {
 			
 		}
-		System.out.println(varStack.peek().getValue());
 		
 	}
 	
@@ -918,19 +910,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMinusAddop(AMinusAddop node) {
-		//Start the var declarations wew lad
-		//
-		/*
-		if(node.getType().toString().equals("INT")) {
-			
-		} else if(node.getType().toString().equals("REAL")) {
-		
-		} else if(node.getType().toString().equals("STRING")) {
-			
-		} else if(node.getType().toString().equals("BOOLEAN")) {
-			
-		}
-		*/
 		
 	}
 	

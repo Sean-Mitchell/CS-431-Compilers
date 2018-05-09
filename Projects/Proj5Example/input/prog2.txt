@@ -14,7 +14,16 @@ BEGIN
 
 		dad := dad / 2 / 2;
 		PUT(dad);
+
+		COOL();
 	}
+
+	VOID COOL(){
+		hello : INT;
+		hello := 1;
+		PUT(hello);
+	}
+	
 	CLASS richard {
 	}
 END
