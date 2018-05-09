@@ -2,12 +2,17 @@ BEGIN
 	dad: INT;
 	VOID MAIN(){
 		temp : INT;
-		dad := 0;
-		temp := 12;
-		PUT(temp);
-		dad := 1 + 1;
+		dad := 1;
 		PUT(dad);
-		dad := 1 + 2 + 3;
+
+		dad := 1 * 2;
+		PUT(dad);
+
+		dad := dad * 2 * dad;
+		PUT(dad);
+
+
+		dad := dad / 2 / 2;
 		PUT(dad);
 	}
 	CLASS richard {

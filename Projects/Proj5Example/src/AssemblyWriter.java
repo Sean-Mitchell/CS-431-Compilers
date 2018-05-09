@@ -302,18 +302,32 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
-				//This is only true when a value is being assigned the first time
 				
+				//Checks ifmultOp
+				if (expVal.getIsMultOp()){
+					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+				}
 				
+			//This is only true when a value is being assigned the first time	
 				if(expVal.getValueSet()) {
-					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");
+					
+				//moves the registers so they will be output correctly
 				} else {
 					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
 				}		
 			} else if(expVal.getType().equals("REAL")) {
-				//This is only true when a value is being assigned the first time
+				
+				//Checks ifmultOp
+				if (expVal.getIsMultOp()){
+					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+				}
+				
+			//This is only true when a value is being assigned the first time	
 				if(expVal.getValueSet()) {
-					mainAssembly.append("\tli.s\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
+					mainAssembly.append("\tli.s\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");		
+
+				//moves the registers so they will be output correctly
 				} else {
 					mainAssembly.append("\ttmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
 				}	
@@ -327,15 +341,25 @@ class AssemblyWriter extends DepthFirstAdapter
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
 		} else {
 			
-			if(expVal.getType().equals("INT")) {
-				//This is only true when a value is being assigned the first time				
+			if(expVal.getType().equals("INT")) {			
+
+				if (expVal.getIsMultOp()){
+					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");
+					//This is only true when a value is being assigned the first time						
+				}
+				
 				if(expVal.getValueSet()) {
 					mainAssembly.append("\tli\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
 				} else {
 					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
 				}		
-			} else if(expVal.getType().equals("REAL")) {
-				//This is only true when a value is being assigned the first time
+			} else if(expVal.getType().equals("REAL")) {			
+
+				if (expVal.getIsMultOp()){
+					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+				}
+				
+				//This is only true when a value is being assigned the first time	
 				if(expVal.getValueSet()) {
 					mainAssembly.append("\tli.s\t" + varStack.peek().getRegister() + ",\t" + expVal.getValue() + "\n");						
 				} else {
@@ -645,29 +669,22 @@ class AssemblyWriter extends DepthFirstAdapter
 		Symbol expVal = varStack.pop();
 		String register;
 
-		
-		System.out.println("ADD EXPRESSION: EXP");
-		System.out.println(expTerm.getType());
-		System.out.println(expTerm.getId());
-		System.out.println(expTerm.getValueSet());
-		System.out.println("ADD EXPRESSION: expVal");
-		System.out.println(expVal.getType());
-		System.out.println(expVal.getId());
-		System.out.println(expVal.getValueSet());
-		
-		
 		// If either of the returned amounts are real, then the int will have to be turned into a real
 		// that way there isn't loss of data 
 		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
 			
-			if(expVal.getId().equals("")) {
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+			} else if(expVal.getId().equals("")) {
 				if (expVal.getValueSet())
 					mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
 			} else {
 				mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");				
 			}			
 
-			if(expTerm.getId().equals("")) {
+			if (expTerm.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expTerm.getRegister() + "\n");					
+			} else if(expTerm.getId().equals("")) {
 				if (expTerm.getValueSet())
 					mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
 			} else {
@@ -678,7 +695,9 @@ class AssemblyWriter extends DepthFirstAdapter
 			varStack.push(new Symbol("", "REAL", register, false));
 		} else  {
 			
-			if(expVal.getId().equals("")) {
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+			} else if(expVal.getId().equals("")) {
 				if (expVal.getValueSet())
 					mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
 			} else {
@@ -689,7 +708,9 @@ class AssemblyWriter extends DepthFirstAdapter
 				}			
 			}			
 
-			if(expTerm.getId().equals("")) {
+			if (expTerm.getIsMultOp()){
+				mainAssembly.append("\tmflo "+  expTerm.getRegister() + "\n");					
+			} else if(expTerm.getId().trim().equals("")) {
 				if (expTerm.getValueSet())
 					mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
 			} else {
@@ -703,9 +724,11 @@ class AssemblyWriter extends DepthFirstAdapter
 			varStack.push(new Symbol("", "INT", register, false));	
 		}
 		
-		
-		mainAssembly.append("\tadd  " + register + ", "+ expTerm.getRegister() + ", " + expVal.getRegister() + "\n");
-		
+		//Decide between add/sub
+		if (node.getAddop().toString().trim().equals("+"))		
+			mainAssembly.append("\tadd  " + register + ", "+ expTerm.getRegister() + ", " + expVal.getRegister() + "\n");
+		else
+			mainAssembly.append("\tsub  " + register + ", "+ expVal.getRegister() + ", " + expTerm.getRegister() + "\n");		
 	}
 	
 	public void caseATermExpr(ATermExpr node) {
@@ -714,19 +737,80 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMultTerm(AMultTerm node) {
-		//Start the var declarations wew lad
-		//this probably isn't right but it's a start
-		/*
-		if(node.getTerm().getType().toString().equals("INT")) {
+		node.getFactor().apply(this);
+		node.getTerm().apply(this);
+		//get lefthand side of assignment
+		Symbol expTerm = varStack.pop();
+		//get righthand side of assignment
+		Symbol expVal = varStack.pop();
+		String register;
+
+		// If either of the returned amounts are real, then the int will have to be turned into a real
+		// that way there isn't loss of data 
+		if (expVal.getType().equals("REAL") || expTerm.getType().equals("REAL")) {
 			
-		} else if(node.getTerm().getType().toString().equals("REAL")) {
-		
-		} else if(node.getTerm().getType().toString().equals("STRING")) {
-			
-		} else if(node.getTerm().getType().toString().equals("BOOLEAN")) {
-			
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+			} else if(expVal.getId().equals("")) {
+				if (expVal.getValueSet())
+					mainAssembly.append("\tli.s\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+			} else {
+				mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");				
+			}			
+
+
+			if (expTerm.getIsMultOp()){
+				mainAssembly.append("\tmflo "+  expTerm.getRegister() + "\n");					
+			} else if(expTerm.getId().equals("")) {
+				if (expTerm.getValueSet())
+					mainAssembly.append("\tli.s\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+			} else {
+				mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getspOffset() + "($sp)\n");				
+			}
+
+			register = getNextFloatRegister();		
+			Symbol pushSymbol = new Symbol("", "REAL", register, false);
+			pushSymbol.setIsMultOp(true);
+			varStack.push(pushSymbol);
+		} else  {			
+
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
+			} else if(expVal.getId().equals("")) {
+				if (expVal.getValueSet())
+					mainAssembly.append("\tli\t" + expVal.getRegister() + "\t" + expVal.getValue() + "\n");					
+			} else {
+				if (expVal.getIsGlobal()) {
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getId() + "\n");				
+				} else {
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp)\n");	
+				}			
+			}			
+
+
+			if (expTerm.getIsMultOp()){
+				mainAssembly.append("\tmflo "+  expTerm.getRegister() + "\n");					
+			} else if(expTerm.getId().trim().equals("")) {
+				if (expTerm.getValueSet())
+					mainAssembly.append("\tli\t" + expTerm.getRegister() + "\t" + expTerm.getValue() + "\n");					
+			} else {
+				if (expTerm.getIsGlobal()) {
+					mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getId() + "\n");				
+				} else {
+					mainAssembly.append("\tlw " + expTerm.getRegister() + ", " + expTerm.getspOffset() + "($sp)\n");	
+				}					
+			}
+			register = getNextIntRegister();	
+			Symbol pushSymbol = new Symbol("", "INT", register, false);
+			pushSymbol.setIsMultOp(true);
+			varStack.push(pushSymbol);	
 		}
-		*/
+		
+		//Decide between mult/div
+		if (node.getMultop().toString().trim().equals("*"))		
+			mainAssembly.append("\tmult  " + expTerm.getRegister() + ", " + expVal.getRegister() + "\n");
+		else
+			mainAssembly.append("\tdiv  " + expTerm.getRegister() + ", " + expVal.getRegister() + "\n");	
 	}
 	
 	public void caseAFactorTerm(AFactorTerm node) {

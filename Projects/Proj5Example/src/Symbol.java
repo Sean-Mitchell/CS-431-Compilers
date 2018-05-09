@@ -15,6 +15,7 @@ public class Symbol
 	private String id = "";
 	private boolean valueSet;
 	private boolean isGlobal;
+	private boolean isMultOp;
 	private int spOffset;
 	
 	
@@ -94,6 +95,10 @@ public class Symbol
 	public void setInt(int amount) {
 		this.intVal = amount;
 	}
+
+	public void setIsMultOp(boolean multOp) {
+		this.isMultOp = multOp;
+	}
 	
 	public void setIsGlobal(boolean global) {
 		this.isGlobal = global;
@@ -130,6 +135,10 @@ public class Symbol
 	
 	public boolean getValueSet() {
 		return valueSet;
+	}
+	
+	public boolean getIsMultOp() {
+		return isMultOp;
 	}
 	
 	public String getStringVal() {
