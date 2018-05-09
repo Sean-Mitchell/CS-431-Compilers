@@ -5,10 +5,15 @@ import Project5.node.*;
 import Project5.parser.*;
 import java.io.*;
 
+
+
 public class Main{
+	public static BufferedWriter w;
 
    public static void main(String[] arguments){
       try{
+			String fileName = arguments[0].substring(0, arguments[0].indexOf("."));
+			w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output/" + fileName + "errorlog" + ".txt"), "utf-8"));
     	  
             Lexer lexer = new Lexer(new PushbackReader
                   (new InputStreamReader(System.in), 1024));
@@ -18,7 +23,8 @@ public class Main{
             Start ast = parser.parse();
             PrintTree printTree = new PrintTree();
             ast.apply(printTree);  //this is what gets the depth first search going
-            
+			
+			w.close();
             
             if (!printTree.errorFound) {
             	//In here do the assembly traversal and write the string to a file

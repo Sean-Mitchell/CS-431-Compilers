@@ -3,9 +3,12 @@ package Project5;
 import Project5.analysis.*;
 import Project5.node.*;
 import java.util.*;
+import java.io.*;
+
 
 class PrintTree extends DepthFirstAdapter
 {	
+	BufferedWriter w = Project5.Main.w;
 	public SymbolTable symbolTable;
 	Stack<Variable> varStack;
 	Class currentClass;
@@ -45,6 +48,9 @@ class PrintTree extends DepthFirstAdapter
 	public void caseAClassDefClassmethodstmt(AClassDefClassmethodstmt node) {
 		if(symbolTable.containsClass(node.getId().toString())) {
 			System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Class " + node.getId().toString() + " has already been declared.");
+			try{
+			w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Class " + node.getId().toString() + " has already been declared.");
+			w.newLine();}catch(Exception e){}
 			errorFound = true;
 		}
 		
@@ -63,6 +69,9 @@ class PrintTree extends DepthFirstAdapter
 		if (inClassScope) {
 			if(currentClass.containsMethod(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -89,6 +98,9 @@ class PrintTree extends DepthFirstAdapter
 		} else {
 			if(symbolTable.containsMethod(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -119,6 +131,9 @@ class PrintTree extends DepthFirstAdapter
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -127,6 +142,9 @@ class PrintTree extends DepthFirstAdapter
 		} else if (inClassScope) {
 			if (currentClass.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -135,6 +153,9 @@ class PrintTree extends DepthFirstAdapter
 		} else {
 			if (symbolTable.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -157,6 +178,9 @@ class PrintTree extends DepthFirstAdapter
 		if (inClassScope) {
 			if(currentClass.containsMethod(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -183,6 +207,9 @@ class PrintTree extends DepthFirstAdapter
 		} else {
 			if(symbolTable.containsMethod(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Method " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -213,6 +240,9 @@ class PrintTree extends DepthFirstAdapter
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -221,6 +251,9 @@ class PrintTree extends DepthFirstAdapter
 		} else if (inClassScope) {
 			if (currentClass.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -229,6 +262,9 @@ class PrintTree extends DepthFirstAdapter
 		} else {
 			if (symbolTable.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -258,6 +294,9 @@ class PrintTree extends DepthFirstAdapter
 		if (!varFound) {
 			if (!symbolTable.containsVar(node.getId().toString())) {
 				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
+				try{
+				w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			} else {
 				location = 2;
@@ -277,17 +316,26 @@ class PrintTree extends DepthFirstAdapter
 			if (type.equals("REAL")) {
 				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					try{
+					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 			} else if (type.equals("INT")) {
 				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					try{
+					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 			} else {
 				if (!exprType.equals(type)) {
 					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						try{
+						w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						w.newLine();}catch(Exception e){}
 						errorFound = true;
 					}
 				}
@@ -319,18 +367,27 @@ class PrintTree extends DepthFirstAdapter
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else if (inClassScope) {
 			if (currentClass.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			currentClass.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else {
 			if (symbolTable.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			symbolTable.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
@@ -371,6 +428,9 @@ class PrintTree extends DepthFirstAdapter
 		if (!varFound) {
 			if (!symbolTable.containsVar(node.getId().toString())) {
 				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
+				try{
+				w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: variable " + node.getId().toString() + " has not been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			} else {
 				location = 2;
@@ -390,17 +450,26 @@ class PrintTree extends DepthFirstAdapter
 			if (type.equals("REAL")) {
 				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					try{
+					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 			} else if (type.equals("INT")) {
 				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					try{
+					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 			} else {
 				if (!exprType.equals(type)) {
 					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
 						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						try{
+						w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
+						w.newLine();}catch(Exception e){}
 						errorFound = true;
 					}
 				}
@@ -416,6 +485,9 @@ class PrintTree extends DepthFirstAdapter
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -424,6 +496,9 @@ class PrintTree extends DepthFirstAdapter
 		} else if (inClassScope) {
 			if (currentClass.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -432,6 +507,9 @@ class PrintTree extends DepthFirstAdapter
 		} else {
 			if (symbolTable.containsVar(node.getId().toString())) {
 				System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			
@@ -473,6 +551,9 @@ class PrintTree extends DepthFirstAdapter
 			if (!varFound) {
 				if (!symbolTable.containsVar(node.getId().toString())) {
 					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has not been declared.");
+					try{
+					w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has not been declared.");
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 			}
@@ -480,6 +561,9 @@ class PrintTree extends DepthFirstAdapter
 			if (inMethodScope) {
 				if (currentMethod.containsVar(node.getId().toString())) {
 					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					try{
+					w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 				
@@ -488,6 +572,9 @@ class PrintTree extends DepthFirstAdapter
 			} else if (inClassScope) {
 				if (currentClass.containsVar(node.getId().toString())) {
 					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					try{
+					w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 				
@@ -496,6 +583,9 @@ class PrintTree extends DepthFirstAdapter
 			} else {
 				if (symbolTable.containsVar(node.getId().toString())) {
 					System.out.println("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					try{
+					w.write("Line " + node.getId().getLine() + " Pos " + node.getId().getPos() + " ERROR: Variable " + node.getId().toString() + " has already been declared.");
+					w.newLine();}catch(Exception e){}
 					errorFound = true;
 				}
 				
@@ -527,18 +617,27 @@ class PrintTree extends DepthFirstAdapter
 		if (inMethodScope) {
 			if (currentMethod.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			currentMethod.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else if (inClassScope) {
 			if (currentClass.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			currentClass.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
 		} else {
 			if (symbolTable.containsVar(node.getLeftSide().toString())) {
 				System.out.println("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				try{
+				w.write("Line " + node.getLeftSide().getLine() + " Pos " + node.getLeftSide().getPos() + " ERROR: Variable " + node.getLeftSide().toString() + " has already been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			}
 			symbolTable.addVar(new Variable(node.getLeftSide().toString(), node.getRightSide().toString()));
@@ -721,6 +820,9 @@ class PrintTree extends DepthFirstAdapter
 		if (!varFound) {
 			if (!symbolTable.containsMethod(node.getId().toString())) {
 				System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: method " + node.getId().toString() + " has not been declared.");
+				try{
+				w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: method " + node.getId().toString() + " has not been declared.");
+				w.newLine();}catch(Exception e){}
 				errorFound = true;
 			} else {
 				location = 2;
