@@ -116,11 +116,8 @@ class AssemblyWriter extends DepthFirstAdapter
 				dataAssembly.append(key + ":\t.asciiz\n");
 			}
 		}
-		
-		//Make pointer offset grow in the right direction
-		stackPointerAdded *= -1;
-		
-		mainAssembly.append("\taddiu $sp, $sp," + stackPointerAdded + "\n");
+				
+		mainAssembly.append("\tsub $sp, $sp," + stackPointerAdded + "\n");
 			
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
@@ -177,14 +174,17 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//gets all the keys (variable names) in method
 		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
-		Set<String> parameterNames = thisMethod.getLocalVariables().keySet();
+		LinkedList<Variables> parameterVariables = thisMethod.getParams().keySet();
 		
 		//push scope onto stack
-		currentScope.currentScope(node.getId().toString().trim());
-		
+		currentScope.add(node.getId().toString().trim());
 		
 		//variable to hold the amount that the stack pointer should be added
 		int stackPointerAdded = 4;
+
+		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
+		mainAssembly.append("\tsw $ra, 0($sp) \n");
+		
 		
 		for (String key : variableNames) {
 			//If the variable is not equal to string, add 4 (bytes) to stack
@@ -209,16 +209,17 @@ class AssemblyWriter extends DepthFirstAdapter
 				dataAssembly.append(key + ":\t.asciiz\n");
 			}
 		}
-		
-		//Must multiply the stackPointer by -1 so the stack grows correctly
-		stackPointerAdded *= -1;
-		
-		mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
+				
+		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
 	
 		node.getId().toString();
 		node.getType().toString();
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
+		
+
+		if (!node.getId().toString().trim().toUpperCase().equals("MAIN"))
+			mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
 	}
 	
 	
