@@ -20,7 +20,9 @@ BEGIN
 
 	VOID COOL(){
 		hello : INT;
-		hello := 1;
+		hello := 9999;
+		PUT(hello);
+		hello := hello / 9999;
 		PUT(hello);
 	}
 	

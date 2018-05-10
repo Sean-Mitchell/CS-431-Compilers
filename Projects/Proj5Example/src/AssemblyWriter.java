@@ -79,6 +79,8 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
 		
+		System.out.println("IS THIS HIT TWICE: " + node.getId().toString());
+		
 		/*Instead of doing this node stuff,
 			Loop through all variables and add them to the stack
 			I should say do this for local variables in a method not in the class		
@@ -86,8 +88,13 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//Input method name into assembly code
 		//Only if it's not the main method
-		if (!node.getId().toString().trim().toUpperCase().equals("MAIN"))
+		int stackPointerAdded = 0;
+		if (!node.getId().toString().trim().toUpperCase().equals("MAIN")) {
+			stackPointerAdded += 8;
 			mainAssembly.append(node.getId().toString().trim() + ":");
+			mainAssembly.append("\tsub $sp, $sp," + stackPointerAdded + "\n");
+			mainAssembly.append("\tsw $ra, 0($sp) \n");
+		}
 		
 		
 		//Get total amount of vars != to strings
@@ -102,7 +109,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		currentScope.add(node.getId().toString().trim());
 		
 		//variable to hold the amount that the stack pointer should be added
-		int stackPointerAdded = 4;
 
 		
 		for (String key : variableNames) {
@@ -117,9 +123,8 @@ class AssemblyWriter extends DepthFirstAdapter
 				dataAssembly.append(key + ":\t.asciiz\n");
 			}
 		}
+		mainAssembly.append("\tsub $sp, $sp," + (stackPointerAdded - 8) + "\n");
 				
-		mainAssembly.append("\tsub $sp, $sp," + stackPointerAdded + "\n");
-		mainAssembly.append("\tsw $ra, " + stackPointerAdded + "($sp) \n");
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
 		
@@ -127,9 +132,10 @@ class AssemblyWriter extends DepthFirstAdapter
 		if (node.getId().toString().trim().equals("MAIN")) {
 			mainAssembly.append("\tb exit\n");
 		} else {
-			mainAssembly.append("\tlw $ra, " + stackPointerAdded + "($sp) \n");
-			mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
-			mainAssembly.append("\tjr $a0\n");
+			mainAssembly.append("\taddiu $sp, $sp," + (stackPointerAdded - 8) + "\n");
+			mainAssembly.append("\tlw $ra, 0($sp) \n");
+			mainAssembly.append("\taddiu $sp, $sp, 4\n");
+			mainAssembly.append("\tjr $ra\n");
 		}
 
 			
@@ -187,7 +193,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		currentScope.add(node.getId().toString().trim());
 		
 		//variable to hold the amount that the stack pointer should be added
-		int stackPointerAdded = 4;
+		int stackPointerAdded = 8;
 
 		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
 		mainAssembly.append("\tsw $ra, 0($sp) \n");
@@ -221,7 +227,7 @@ class AssemblyWriter extends DepthFirstAdapter
 			}
 		}
 				
-		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
+		mainAssembly.append("\tsub $sp, $sp, " + (stackPointerAdded - 8) + "\n");
 	
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
@@ -229,21 +235,10 @@ class AssemblyWriter extends DepthFirstAdapter
 
 		if (!node.getId().toString().trim().toUpperCase().equals("MAIN")) {
 			mainAssembly.append("\tlw $ra, 0($sp) \n");
-			mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
+			mainAssembly.append("\taddiu $sp, $sp, " + (stackPointerAdded - 8) + "\n");
 			mainAssembly.append("\tjr $a0\n");
 		}
-	}
-	
-	
-	
-	
-	//Lmao is this going to work?
-	//=\_(*u*)_/=
-	//INPUT: takes in current stack pointer, and variable, calculates size basedc off that
-	//RETURN: should return new stack pointer to add to stack given variable
-	//private int appendVariableToTheStack()
-	
-	
+	}	
 	
 	
 	public void caseAVarDeclMethodstmtseq(AVarDeclMethodstmtseq node) {
