@@ -60,7 +60,7 @@ class AssemblyWriter extends DepthFirstAdapter
         node.getClassmethodstmts().apply(this);
         
         //Exit program routine
-        mainAssembly.append("exit: \n").append("\t.li\t$v0, 10\n").append("syscall\n");
+        mainAssembly.append("exit: \n").append("\tli\t$v0, 10\n").append("syscall\n");
 		System.out.println("main\n" + mainAssembly.toString() + "\n" + dataAssembly.toString() );
 	}
 	
@@ -93,7 +93,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		//Get total amount of vars != to strings
 		//loop through them and assign them offsets from the $sp
 		//Not worrying about other methods/ variables at the moment
-		Method thisMethod = symbolTable.getMethod(node.getId().toString().trim());
+		Method thisMethod = symbolTable.getMethod(node.getId().toString());
 		
 		//gets all the keys (variable names) in method
 		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
@@ -102,7 +102,8 @@ class AssemblyWriter extends DepthFirstAdapter
 		currentScope.add(node.getId().toString().trim());
 		
 		//variable to hold the amount that the stack pointer should be added
-		int stackPointerAdded = 0;
+		int stackPointerAdded = 4;
+
 		
 		for (String key : variableNames) {
 			//If the variable is not equal to string, add 4 (bytes) to stack
@@ -118,13 +119,19 @@ class AssemblyWriter extends DepthFirstAdapter
 		}
 				
 		mainAssembly.append("\tsub $sp, $sp," + stackPointerAdded + "\n");
-			
+		mainAssembly.append("\tsw $ra, " + stackPointerAdded + "($sp) \n");
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
 		
 		//Assume main method is all caps and only happens once
-		if (node.getId().toString().trim().equals("MAIN")) 
+		if (node.getId().toString().trim().equals("MAIN")) {
 			mainAssembly.append("\tb exit\n");
+		} else {
+			mainAssembly.append("\tlw $ra, " + stackPointerAdded + "($sp) \n");
+			mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
+			mainAssembly.append("\tjr $a0\n");
+		}
+
 			
 	}
 	
@@ -174,7 +181,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//gets all the keys (variable names) in method
 		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
-		LinkedList<Variables> parameterVariables = thisMethod.getParams().keySet();
+		ArrayList<Variable> parameterVariables = thisMethod.getParams();
 		
 		//push scope onto stack
 		currentScope.add(node.getId().toString().trim());
@@ -185,6 +192,10 @@ class AssemblyWriter extends DepthFirstAdapter
 		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
 		mainAssembly.append("\tsw $ra, 0($sp) \n");
 		
+		for (int i = 0; i < parameterVariables.size(); i++) {
+			parameterVariables.get(i).setspOffset(stackPointerAdded);
+			stackPointerAdded += 4;								
+		}
 		
 		for (String key : variableNames) {
 			//If the variable is not equal to string, add 4 (bytes) to stack
@@ -212,24 +223,25 @@ class AssemblyWriter extends DepthFirstAdapter
 				
 		mainAssembly.append("\tsub $sp, $sp, " + stackPointerAdded + "\n");
 	
-		node.getId().toString();
-		node.getType().toString();
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
 		
 
-		if (!node.getId().toString().trim().toUpperCase().equals("MAIN"))
+		if (!node.getId().toString().trim().toUpperCase().equals("MAIN")) {
+			mainAssembly.append("\tlw $ra, 0($sp) \n");
 			mainAssembly.append("\taddiu $sp, $sp, " + stackPointerAdded + "\n");
+			mainAssembly.append("\tjr $a0\n");
+		}
 	}
 	
 	
 	
 	
 	//Lmao is this going to work?
-	//¯\_(*u*)_/¯
+	//=\_(*u*)_/=
 	//INPUT: takes in current stack pointer, and variable, calculates size basedc off that
 	//RETURN: should return new stack pointer to add to stack given variable
-	private int appendVariableToTheStack()
+	//private int appendVariableToTheStack()
 	
 	
 	
@@ -536,6 +548,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodCallStmt(AMethodCallStmt node) {
+		mainAssembly.append("\tjal  " + node.getId().toString()+ "\n");
 		System.out.println(node.getId().toString());
 	}
 	
