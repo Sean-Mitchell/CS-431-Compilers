@@ -1,0 +1,5 @@
+http://user.it.uu.se/~justin/Teaching/NewDarkSlides/lecture5.pdf
+http://www.mrc.uidaho.edu/mrc/people/jff/digital/MIPSir.html
+https://docs.oracle.com/javase/7/docs/api/java/util/LinkedList.html
+http://courses.missouristate.edu/KenVollmar/mars/download.htm
+https://courses.cs.washington.edu/courses/cse378/09wi/lectures/lec05.pdf

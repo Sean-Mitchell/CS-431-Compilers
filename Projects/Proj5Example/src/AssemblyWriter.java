@@ -26,7 +26,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	Stack<Symbol> varStack = new Stack<Symbol>();
 	
 	//String based stack that holds the current scope so that we know where to look in the symbol table
-	Stack<String> currentScope = new Stack<String>();
+	LinkedList<String> currentScope = new LinkedList<String>();
 	
 	//StringBuilders for data and main method
 	public StringBuilder mainAssembly;
@@ -99,7 +99,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
 		
 		//push scope onto stack
-		currentScope.push(node.getId().toString().trim());
+		currentScope.add(node.getId().toString().trim());
 		
 		//variable to hold the amount that the stack pointer should be added
 		int stackPointerAdded = 0;
@@ -177,13 +177,26 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		//gets all the keys (variable names) in method
 		Set<String> variableNames = thisMethod.getLocalVariables().keySet();
+		Set<String> parameterNames = thisMethod.getLocalVariables().keySet();
 		
 		//push scope onto stack
-		currentScope.push(node.getId().toString().trim());
+		currentScope.currentScope(node.getId().toString().trim());
 		
 		
 		//variable to hold the amount that the stack pointer should be added
 		int stackPointerAdded = 4;
+		
+		for (String key : variableNames) {
+			//If the variable is not equal to string, add 4 (bytes) to stack
+			//and assign variable $sp offset
+			if (!thisMethod.getVar(key).getType().equals("STRING")) {
+				thisMethod.getVar(key).setspOffset(stackPointerAdded);
+				stackPointerAdded += 4;					
+			} else {
+				//Temporary, we still need to get the strings value
+				dataAssembly.append(key + ":\t.asciiz\n");
+			}
+		}
 		
 		for (String key : variableNames) {
 			//If the variable is not equal to string, add 4 (bytes) to stack
@@ -207,6 +220,18 @@ class AssemblyWriter extends DepthFirstAdapter
 		node.getVarlist().apply(this);
 		node.getStmtseq().apply(this);
 	}
+	
+	
+	
+	
+	//Lmao is this going to work?
+	//¯\_(*u*)_/¯
+	//INPUT: takes in current stack pointer, and variable, calculates size basedc off that
+	//RETURN: should return new stack pointer to add to stack given variable
+	private int appendVariableToTheStack()
+	
+	
+	
 	
 	public void caseAVarDeclMethodstmtseq(AVarDeclMethodstmtseq node) {
 		node.getId().toString();
@@ -269,7 +294,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		//Currently assume that this is a global scope 
 		//TODO: update with scopeStack thingy
 		Variable tempVariable = new Variable("wat","no");
-		int stackPointerOffset = 0;
+		int stackPointerOffset = 4;
 		
 		//SCOPE BOIS WEW LAD		
 		//checks method scope
@@ -941,14 +966,14 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	//returns the closest variable to your scope
 	private Variable getVariable(String Id) {
-		if (symbolTable.containsMethod(currentScope.peek()))
+		if (symbolTable.containsMethod(currentScope.peekLast()))
 		{
 			//if the method exists in the global table then get it
 			//if that method contains the var we're looking at then add it into the variable symbol table
-			if (symbolTable.getMethod(currentScope.peek()).containsVar(Id.trim()))
+			if (symbolTable.getMethod(currentScope.peekLast()).containsVar(Id.trim()))
 			{
-				symbolTable.getMethod(currentScope.peek()).getVar(Id.trim()).setIsGlobal(false);
-				return symbolTable.getMethod(currentScope.peek()).getVar(Id.trim());
+				symbolTable.getMethod(currentScope.peekLast()).getVar(Id.trim()).setIsGlobal(false);
+				return symbolTable.getMethod(currentScope.peekLast()).getVar(Id.trim());
 			}			
 		}
 		//check global
