@@ -313,8 +313,11 @@ class PrintTree extends DepthFirstAdapter
 				case 2: type = symbolTable.getVar(node.getId().toString()).getType(); break;
 			}
 			
+			type = type.trim();
+			
 			if (type.equals("REAL")) {
 				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("aaa");
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 					try{
 					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -323,6 +326,7 @@ class PrintTree extends DepthFirstAdapter
 				}
 			} else if (type.equals("INT")) {
 				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("bbb");
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 					try{
 					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -332,6 +336,7 @@ class PrintTree extends DepthFirstAdapter
 			} else {
 				if (!exprType.equals(type)) {
 					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+						System.out.println("ccc");
 						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 						try{
 						w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -447,8 +452,11 @@ class PrintTree extends DepthFirstAdapter
 				case 2: type = symbolTable.getVar(node.getId().toString()).getType(); break;
 			}
 			
+			type = type.trim();
+			
 			if (type.equals("REAL")) {
 				if (!(exprType.equals("REAL") || exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("aaa");
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 					try{
 					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -457,6 +465,7 @@ class PrintTree extends DepthFirstAdapter
 				}
 			} else if (type.equals("INT")) {
 				if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+					System.out.println("bbb");
 					System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 					try{
 					w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -466,6 +475,7 @@ class PrintTree extends DepthFirstAdapter
 			} else {
 				if (!exprType.equals(type)) {
 					if (!(exprType.equals("INT") || exprType.equals("BOOLEAN"))) {
+						System.out.println("ccc");
 						System.out.println("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
 						try{
 						w.write("line " + node.getId().getLine() + " pos " + node.getId().getPos() + " error: cannot assign " + exprType + " to variable of type " + type);
@@ -836,7 +846,7 @@ class PrintTree extends DepthFirstAdapter
 			case 2: type = symbolTable.getMethod(node.getId().toString()).getType(); break;
 		}
 		
-		exprType = type;
+		exprType = type.trim();
 	}
 	
 	public void caseALastFactor(ALastFactor node) {

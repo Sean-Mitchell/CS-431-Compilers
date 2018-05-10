@@ -6,7 +6,7 @@ BEGIN
 	REAL Method(g : INT, h : REAL, i : STRING){
 		x : REAL;
 		IF(x > 4.5) THEN{
-			y : INT;
+			y := 4;
 		}
 		y := 3.5;
 	}
