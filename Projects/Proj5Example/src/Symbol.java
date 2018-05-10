@@ -16,6 +16,7 @@ public class Symbol
 	private boolean valueSet;
 	private boolean isGlobal;
 	private boolean isMultOp;
+	private boolean isMethodCall;
 	private int spOffset;
 	
 	
@@ -104,6 +105,10 @@ public class Symbol
 		this.isGlobal = global;
 	}
 	
+	public void setIsMethodCall(boolean isMethodCall) {
+		this.isMethodCall = isMethodCall;
+	}
+	
 	public void setspOffset(int offset) {
 		this.spOffset = offset;
 	}
@@ -135,6 +140,10 @@ public class Symbol
 	
 	public boolean getValueSet() {
 		return valueSet;
+	}
+	
+	public boolean getIsMethodCall() {
+		return isMethodCall;
 	}
 	
 	public boolean getIsMultOp() {

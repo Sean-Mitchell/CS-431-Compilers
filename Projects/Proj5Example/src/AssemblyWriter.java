@@ -246,7 +246,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAAssignEqualsMethodstmtseq(AAssignEqualsMethodstmtseq node) {
-//		System.out.println(node.getId().toString());
 		node.getExpr().apply(this);
 	}
 	
@@ -255,6 +254,64 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAPrintStmtMethodstmtseq(APrintStmtMethodstmtseq node) {
+		Variable tempVariable = new Variable("wat","no");
+		
+		//SCOPE BOIS WEW LAD		
+		//checks method scope
+
+		tempVariable = getVariable(node.getId().toString());
+
+		
+		//System.out.println(varStack.peek().getRegister());
+		//System.out.println(varStack.peek().getType());
+		
+		if (tempVariable.isGlobal()) {	
+			if (tempVariable.getType().equals("STRING")) {
+				mainAssembly.append("\tli  $v0, 4\n");
+				mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("INT")) {
+				String register = getNextIntRegister();
+				mainAssembly.append("\tlw " + register + ", " + node.getId().toString() + "\n");			
+				mainAssembly.append("\tli  $v0, 1\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("REAL")) {
+				String register = getNextFloatRegister();
+				mainAssembly.append("\tlw " + register + ", " + node.getId().toString() + "\n");		
+				mainAssembly.append("\tli  $v0, 2\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else {
+				
+			}		
+		} else {	
+			if (tempVariable.getType().equals("STRING")) {
+				mainAssembly.append("\tli  $v0, 4\n");
+				mainAssembly.append("\tla  $a0, " + node.getId().toString() + "\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("INT")) {
+				String register = getNextIntRegister();
+				mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");			
+				mainAssembly.append("\tli  $v0, 1\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else if (tempVariable.getType().trim().equals("REAL")) {
+				String register = getNextFloatRegister();
+				mainAssembly.append("\tlw " + register + ", " + tempVariable.getspOffset() + "($sp)\n");		
+				mainAssembly.append("\tli  $v0, 2\n");
+				mainAssembly.append("\tla  $a0, (" + register + ")\n");
+				mainAssembly.append("syscall\n");
+				
+			} else {
+				
+			}	
+		}		
 		
 	}
 	
@@ -339,6 +396,10 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
+
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
 				
 				//Checks ifmultOp
 				if (expVal.getIsMultOp()){
@@ -351,9 +412,18 @@ class AssemblyWriter extends DepthFirstAdapter
 					
 				//moves the registers so they will be output correctly
 				} else {
+
+					if (expVal.getIsMethodCall()){
+						mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+					} 
 					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
 				}		
 			} else if(expVal.getType().equals("REAL")) {
+				
+
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
 				
 				//Checks ifmultOp
 				if (expVal.getIsMultOp()){
@@ -372,14 +442,22 @@ class AssemblyWriter extends DepthFirstAdapter
 				//TODO
 
 			} else {
+				
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
 				mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");						
 			}
 			
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  node.getId().toString() + " \n");			
 		} else {
 			
-			if(expVal.getType().equals("INT")) {			
-
+			if(expVal.getType().equals("INT")) {	
+				
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
+				
 				if (expVal.getIsMultOp()){
 					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");
 					//This is only true when a value is being assigned the first time						
@@ -392,6 +470,10 @@ class AssemblyWriter extends DepthFirstAdapter
 				}		
 			} else if(expVal.getType().equals("REAL")) {			
 
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
+				
 				if (expVal.getIsMultOp()){
 					mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");					
 				}
@@ -406,6 +488,11 @@ class AssemblyWriter extends DepthFirstAdapter
 				//TODO
 
 			} else {
+
+				if (expVal.getIsMethodCall()){
+					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
+				} 
+				
 				mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");						
 			}
 			mainAssembly.append("\tsw  " + varStack.peek().getRegister() +", "  +  stackPointerOffset + "($sp) \n");			
@@ -543,6 +630,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	}
 	
 	public void caseAMethodCallStmt(AMethodCallStmt node) {
+		
 		mainAssembly.append("\tjal  " + node.getId().toString()+ "\n");
 		System.out.println(node.getId().toString());
 	}
@@ -551,8 +639,85 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 	}
 	
+	//TODO: fdsafdsa
 	public void caseAReturnStmt(AReturnStmt node) {
 		
+		node.getExpr().apply(this);
+		//Return Statement
+		Symbol variableSymbol;
+		
+		//Get expression from the stack
+		Symbol expVal = varStack.pop();
+		String register = "";
+		
+		if(expVal.getType().equals("INT")) {
+			variableSymbol = new Symbol("", "INT");	
+			register = getNextIntRegister();
+			variableSymbol.setRegister(register);	
+			
+
+			if (expVal.getIsMethodCall()){
+				mainAssembly.append("\tlw " + register + ", $v0 \n");	
+				mainAssembly.append("\tsw  $v0, "  +  register + " \n");											
+			} 
+			
+			//Checks ifmultOp
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");	
+				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");											
+			}
+			
+		//This is only true when a value is being assigned the first time	
+			if(expVal.getValueSet()) {
+				mainAssembly.append("\tli\t" + register + ",\t" + expVal.getValue() + "\n");
+				mainAssembly.append("\tsw  $v0, "  +  register + " \n");							
+				
+			//moves the registers so they will be output correctly
+			} else {
+				mainAssembly.append("\tmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
+				mainAssembly.append("\tsw  $v0, "  +  register + " \n");							
+			}		
+		} else if(expVal.getType().equals("REAL")) {
+			
+			variableSymbol = new Symbol("", "FLOAT");
+			register = getNextFloatRegister();
+			variableSymbol.setRegister(register);	
+			
+			if (expVal.getIsMethodCall()){
+				mainAssembly.append("\tlw " + register + ", $v0 \n");	
+				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");					
+			} 
+			
+			//Checks ifmultOp
+			if (expVal.getIsMultOp()){
+				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");	
+				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");				
+			}
+			
+		//This is only true when a value is being assigned the first time	
+			if(expVal.getValueSet()) {
+				mainAssembly.append("\tli.s\t" + register + ",\t" + expVal.getValue() + "\n");	
+				mainAssembly.append("\tsw  $v0, "  +  register + " \n");	
+
+			//moves the registers so they will be output correctly
+			} else {
+				mainAssembly.append("\ttmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
+				mainAssembly.append("\tsw  $v0, "  +  register + " \n");						
+			}	
+		} else if(expVal.getType().equals("STRING")) {
+			//TODO
+			variableSymbol = new Symbol("", "STRING");
+		} else {
+			variableSymbol = new Symbol("", "BOOLEAN");
+			register = getNextIntRegister();
+			variableSymbol.setRegister(register);	
+			mainAssembly.append("\tmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
+			mainAssembly.append("\tsw  $v0, "  +  register + " \n");					
+		}
+					
+		 	
+		variableSymbol.setIsMethodCall(true);
+		varStack.push(variableSymbol);
 	}
 	
 	public void caseAAssignBooleanStmt(AAssignBooleanStmt node) {
@@ -875,8 +1040,12 @@ class AssemblyWriter extends DepthFirstAdapter
 		node.getArrayOrId().apply(this);
 	}
 	
-	public void caseAIdvarlistFactor(AIdvarlistFactor node) {
-		
+	public void caseAIdvarlistFactor(AIdvarlistFactor node) {		
+
+		System.out.println("IS THER ERROR HERE");
+		System.out.println(varStack.peek().getId());
+		mainAssembly.append("\tjal\t" + node.getId().toString()+ "\n");
+		System.out.println(node.getId().toString());
 	}
 	
 	public void caseALastFactor(ALastFactor node) {
