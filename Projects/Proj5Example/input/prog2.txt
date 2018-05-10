@@ -2,28 +2,17 @@ BEGIN
 	dad: INT;
 	VOID MAIN(){
 		temp : INT;
-		dad := 1;
+		dad := 0;
 		PUT(dad);
 
-		dad := 1 * 2;
+		dad := NEAT();
 		PUT(dad);
-
-		dad := dad * 2 * dad;
-		PUT(dad);
-
-
-		dad := dad / 2 / 2;
-		PUT(dad);
-
-		COOL();
 	}
 
-	VOID COOL(){
+	INT NEAT() {
 		hello : INT;
-		hello := 9999;
-		PUT(hello);
-		hello := hello / 9999;
-		PUT(hello);
+		hello := 1;
+		RETURN hello;
 	}
 	
 	CLASS richard {
