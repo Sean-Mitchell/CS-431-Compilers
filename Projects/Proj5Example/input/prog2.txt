@@ -1,5 +1,13 @@
 BEGIN
 	dad: INT;
+	
+
+	INT NEAT() {
+		hello : INT;
+		hello := 1;
+		RETURN hello;
+	}
+	
 	VOID MAIN(){
 		temp : INT;
 		dad := 0;
@@ -7,12 +15,6 @@ BEGIN
 
 		dad := NEAT();
 		PUT(dad);
-	}
-
-	INT NEAT() {
-		hello : INT;
-		hello := 1;
-		RETURN hello;
 	}
 	
 	CLASS richard {
