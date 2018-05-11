@@ -18,6 +18,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	int ifCount;
 	int whileCount;
 	int caseCount;
+	String linkRegister;
 	
 	//Used for MoreIds
 	String variableType;
@@ -53,7 +54,7 @@ class AssemblyWriter extends DepthFirstAdapter
 	public void caseAProg(AProg node) {
 		//We should probably expand this and make it set up classes and methods and stuff eventually
 		//Initial Add stuff
-		mainAssembly.append("\t.text\n").append("\t.global main\n").append("main:\n");
+		mainAssembly.append("\t.text\n").append("\t.globl main\n").append("jal main\n");
 		dataAssembly.append("\t.data\n");
 		
 		//Tree Traversal Start
@@ -94,6 +95,8 @@ class AssemblyWriter extends DepthFirstAdapter
 			mainAssembly.append(node.getId().toString().trim() + ":");
 			mainAssembly.append("\tsub $sp, $sp," + stackPointerAdded + "\n");
 			mainAssembly.append("\tsw $ra, 0($sp) \n");
+		} else {
+			mainAssembly.append("main:\n");
 		}
 		
 		
@@ -132,6 +135,7 @@ class AssemblyWriter extends DepthFirstAdapter
 		if (node.getId().toString().trim().equals("MAIN")) {
 			mainAssembly.append("\tb exit\n");
 		} else {
+			System.out.println(varStack.peek().getId());
 			mainAssembly.append("\taddiu $sp, $sp," + (stackPointerAdded - 8) + "\n");
 			mainAssembly.append("\tlw $ra, 0($sp) \n");
 			mainAssembly.append("\taddiu $sp, $sp, 4\n");
@@ -396,7 +400,12 @@ class AssemblyWriter extends DepthFirstAdapter
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
-
+				
+				System.out.println("METHOD CALL ASSIGNMENT");
+				System.out.println("WHAT: " + expVal.getIsMethodCall());
+				System.out.println("WHAT: " + expVal.getId());
+				System.out.println("WHAT: " + expVal.getValue());
+				
 				if (expVal.getIsMethodCall()){
 					mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
 				} 
@@ -415,7 +424,10 @@ class AssemblyWriter extends DepthFirstAdapter
 
 					if (expVal.getIsMethodCall()){
 						mainAssembly.append("\tlw " + expVal.getRegister() + ", $v0 \n");									
-					} 
+					} else {
+						mainAssembly.append("\tlw " + expVal.getRegister() + ", " + expVal.getspOffset() + "($sp) \n");
+						
+					}
 					mainAssembly.append("\tmove\t" + varStack.peek().getRegister() + ",\t" + expVal.getRegister() + "\n");							
 				}		
 			} else if(expVal.getType().equals("REAL")) {
@@ -655,27 +667,30 @@ class AssemblyWriter extends DepthFirstAdapter
 			register = getNextIntRegister();
 			variableSymbol.setRegister(register);	
 			
+			System.out.println("HIT ME AGAIN TOOB SOCK");
+			System.out.println(expVal.getRegister());
+			System.out.println(expVal.getIsMethodCall());
 
 			if (expVal.getIsMethodCall()){
 				mainAssembly.append("\tlw " + register + ", $v0 \n");	
-				mainAssembly.append("\tsw  $v0, "  +  register + " \n");											
+				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");											
 			} 
 			
 			//Checks ifmultOp
 			if (expVal.getIsMultOp()){
 				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");	
-				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");											
+				mainAssembly.append("\tsw  $v0, ("  +  expVal.getRegister() + ") \n");											
 			}
 			
 		//This is only true when a value is being assigned the first time	
 			if(expVal.getValueSet()) {
 				mainAssembly.append("\tli\t" + register + ",\t" + expVal.getValue() + "\n");
-				mainAssembly.append("\tsw  $v0, "  +  register + " \n");							
+				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");							
 				
 			//moves the registers so they will be output correctly
 			} else {
 				mainAssembly.append("\tmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
-				mainAssembly.append("\tsw  $v0, "  +  register + " \n");							
+				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");							
 			}		
 		} else if(expVal.getType().equals("REAL")) {
 			
@@ -685,19 +700,19 @@ class AssemblyWriter extends DepthFirstAdapter
 			
 			if (expVal.getIsMethodCall()){
 				mainAssembly.append("\tlw " + register + ", $v0 \n");	
-				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");					
+				mainAssembly.append("\tsw  $v0, ("  +  expVal.getRegister() + ") \n");					
 			} 
 			
 			//Checks ifmultOp
 			if (expVal.getIsMultOp()){
 				mainAssembly.append("\tmflo " + expVal.getRegister() + "\n");	
-				mainAssembly.append("\tsw  $v0, "  +  expVal.getRegister() + " \n");				
+				mainAssembly.append("\tsw  $v0, ("  +  expVal.getRegister() + ") \n");				
 			}
 			
 		//This is only true when a value is being assigned the first time	
 			if(expVal.getValueSet()) {
 				mainAssembly.append("\tli.s\t" + register + ",\t" + expVal.getValue() + "\n");	
-				mainAssembly.append("\tsw  $v0, "  +  register + " \n");	
+				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");	
 
 			//moves the registers so they will be output correctly
 			} else {
@@ -712,12 +727,15 @@ class AssemblyWriter extends DepthFirstAdapter
 			register = getNextIntRegister();
 			variableSymbol.setRegister(register);	
 			mainAssembly.append("\tmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
-			mainAssembly.append("\tsw  $v0, "  +  register + " \n");					
+			mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");					
 		}
 					
-		 	
 		variableSymbol.setIsMethodCall(true);
 		varStack.push(variableSymbol);
+
+		varStack.peek().setIsMethodCall(true);
+		System.out.println("IS THIS TRUE: " + varStack.peek().getIsMethodCall());
+		System.out.println("IS THIS TRUE: " + varStack.peek().getId());
 	}
 	
 	public void caseAAssignBooleanStmt(AAssignBooleanStmt node) {
@@ -1040,12 +1058,12 @@ class AssemblyWriter extends DepthFirstAdapter
 		node.getArrayOrId().apply(this);
 	}
 	
-	public void caseAIdvarlistFactor(AIdvarlistFactor node) {		
-
-		System.out.println("IS THER ERROR HERE");
-		System.out.println(varStack.peek().getId());
+	public void caseAIdvarlistFactor(AIdvarlistFactor node) {	
 		mainAssembly.append("\tjal\t" + node.getId().toString()+ "\n");
 		System.out.println(node.getId().toString());
+		
+		varStack.peek().setRegister(getNextIntRegister());
+		
 	}
 	
 	public void caseALastFactor(ALastFactor node) {
