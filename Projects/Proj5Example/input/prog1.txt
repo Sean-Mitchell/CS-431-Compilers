@@ -1,51 +1,43 @@
 BEGIN
-	x : INT;
-	y : REAL;
-	z : STRING;	
-	
-	REAL Method(g : INT, h : REAL, i : STRING){
-		x : REAL;
-		IF(x > 4.5) THEN{
-			y := 4;
-		}
-		y := 3.5;
+	dad: INT;
+
+	INT NEAT() {
+		hello : INT;
+		hello := 1;
+		RETURN hello;
 	}
-	
+
 	VOID MAIN(){
-		temp := NEW TestClass();
-		y := temp.MethodTwo(FALSE, 10, 5);
-		x := temp.MethodTwo(TRUE, 10, 5);
-		PUT(x);
-		PUT(y);
-	}
-	
-	CLASS TestClass {
-		x : BOOLEAN;
-		y : INT;
-		z : INT;
-	
-		REAL MethodTwo(g : BOOLEAN, h : INT, i : INT){
-			IF(g) THEN{
-				y : INT;
-				y := 6;
-				PUT(y);
-			} ELSE{
-				WHILE(h > i){
-					FOR(INT q := h+i; q > 0; q--){
-						printMe : INT;
-						printMe := q + q;
-						PUT(printMe);
-						z := "Enter Stuff:";
-						PUT(z);
-						a : INT;
-						a := GET();
-						PUT(a);
-					}
-					h--;
-					i++;
-				}
-			}
-			RETURN h + i;
-		}
+		temp : INT;
+
+		temp := 10 - 5 ;
+		PUT(temp);
+
+		temp := 10 + 5 ;
+		PUT(temp);
+
+		temp := 20 ;
+		PUT(temp);
+
+		temp := 20 * 2 ;
+		PUT(temp);
+
+		temp := 20 / 2 ;
+		PUT(temp);
+
+		temp := 20 / 2 * 5;
+		PUT(temp);
+
+		temp := 10 + 5 + 10;
+		PUT(temp);
+
+		temp := 10 - 10 - 10;
+		PUT(temp);
+
+		dad := 12;
+		PUT(dad);
+
+		dad := NEAT();
+		PUT(dad);
 	}
 END

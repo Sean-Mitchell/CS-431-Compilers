@@ -62,7 +62,6 @@ class AssemblyWriter extends DepthFirstAdapter
         
         //Exit program routine
         mainAssembly.append("exit: \n").append("\tli\t$v0, 10\n").append("syscall\n");
-		System.out.println("main\n" + mainAssembly.toString() + "\n" + dataAssembly.toString() );
 	}
 	
 	public void caseAClasStmtsClassmethodstmts(AClassStmtsClassmethodstmts node) {
@@ -80,7 +79,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAMethodDeclClassmethodstmt(AMethodDeclClassmethodstmt node) {
 		
-		System.out.println("IS THIS HIT TWICE: " + node.getId().toString());
 		
 		/*Instead of doing this node stuff,
 			Loop through all variables and add them to the stack
@@ -135,7 +133,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		if (node.getId().toString().trim().equals("MAIN")) {
 			mainAssembly.append("\tb exit\n");
 		} else {
-			System.out.println(varStack.peek().getId());
 			mainAssembly.append("\taddiu $sp, $sp," + (stackPointerAdded - 8) + "\n");
 			mainAssembly.append("\tlw $ra, 0($sp) \n");
 			mainAssembly.append("\taddiu $sp, $sp, 4\n");
@@ -266,8 +263,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		tempVariable = getVariable(node.getId().toString());
 
 		
-		//System.out.println(varStack.peek().getRegister());
-		//System.out.println(varStack.peek().getType());
 		
 		if (tempVariable.isGlobal()) {	
 			if (tempVariable.getType().equals("STRING")) {
@@ -372,10 +367,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		stackPointerOffset = tempVariable.getspOffset();
 
 
-//		System.out.println("Variable name and type");
-//		System.out.println(tempVariable.getName());
-//		System.out.println(tempVariable.getType());
-
 		
 		Symbol variableSymbol = new Symbol(tempVariable.getName(), tempVariable.getType());	
 		
@@ -397,12 +388,6 @@ class AssemblyWriter extends DepthFirstAdapter
 			//but in case I do this is a temp use case
 			variableSymbol.setRegister("$a0");			
 		}	
-
-
-		System.out.println("METHOD CALL ASSIGNMENT fdsafdsa");
-		System.out.println("WHAT: " + varStack.peek().getIsMethodCall());
-		System.out.println("WHAT: " + varStack.peek().getId());
-		System.out.println("WHAT: " + varStack.peek().getRegister());
 		
 		if(tempVariable.isGlobal()) {
 			if(expVal.getType().equals("INT")) {
@@ -549,9 +534,6 @@ class AssemblyWriter extends DepthFirstAdapter
 		tempVariable = getVariable(node.getId().toString());
 
 		
-		//System.out.println(varStack.peek().getRegister());
-		//System.out.println(varStack.peek().getType());
-		
 		if (tempVariable.isGlobal()) {	
 			if (tempVariable.getType().equals("STRING")) {
 				mainAssembly.append("\tli  $v0, 4\n");
@@ -678,13 +660,11 @@ class AssemblyWriter extends DepthFirstAdapter
 		//This is only true when a value is being assigned the first time	
 			if(expVal.getValueSet()) {
 				mainAssembly.append("\tli\t" + register + ",\t" + expVal.getValue() + "\n");
-				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");							
 				mainAssembly.append("\tla  $v0, ("  +  register + ") \n");							
 				
 			//moves the registers so they will be output correctly
 			} else {
 				mainAssembly.append("\tmove\t" + register + ",\t" + expVal.getRegister() + "\n");	
-				mainAssembly.append("\tsw  $v0, ("  +  register + ") \n");							
 				mainAssembly.append("\tla  $v0, ("  +  register + ") \n");							
 			}		
 		} else if(expVal.getType().equals("REAL")) {
@@ -694,8 +674,6 @@ class AssemblyWriter extends DepthFirstAdapter
 			variableSymbol.setRegister(register);	
 			
 			if (expVal.getIsMethodCall()){
-				mainAssembly.append("\tlw " + register + ", $v0 \n");	
-				mainAssembly.append("\tsw  $v0, ("  +  expVal.getRegister() + ") \n");					
 				mainAssembly.append("\tla " + register + ", ($v0) \n");	
 				mainAssembly.append("\tla  $v0, ("  +  expVal.getRegister() + ") \n");					
 			}  else {
@@ -1057,7 +1035,6 @@ class AssemblyWriter extends DepthFirstAdapter
 	
 	public void caseAIdvarlistFactor(AIdvarlistFactor node) {	
 		mainAssembly.append("\tjal\t" + node.getId().toString()+ "\n");
-		System.out.println(node.getId().toString());
 		
 		varStack.peek().setRegister(getNextIntRegister());
 		
